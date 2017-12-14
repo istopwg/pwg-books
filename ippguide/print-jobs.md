@@ -56,3 +56,8 @@ Submitting Print Jobs
 - CUPS API examples
 
 - Node.js examples
+
+Further Reading
+---------------
+
+Links to additional reading - IIG 2, etc.
