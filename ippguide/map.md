@@ -7,6 +7,11 @@ Map of IPP Standards
 
 - Highlight commonly implemented standards
 
-- Group into functional areas
+- Group into functional areas - features (stapling, collation, print quality, stored jobs, etc.)
+
+- What attribute/operation/value should I be using?
 
 - Some standards may be listed multiple times.
+
+- Link/copy of IANA IPP registry? Index of attributes generated from IANA IPP registry?
+
