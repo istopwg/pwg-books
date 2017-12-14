@@ -6,6 +6,8 @@ Introduction
 What is IPP?/About This Book
 ----------------------------
 
+- Scope: (enterprise) application developers wanting to print reports, billing, logs, etc. and/or monitoring printers
+
 - High level capabilities, security features
 
 - Supported by 98+% of all printers sold today (outliers are mainly industrial
