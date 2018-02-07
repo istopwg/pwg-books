@@ -5,7 +5,7 @@ Introduction
 What is IPP?
 ------------
 
-IPP is an application level protocol used for distributed printing that
+IPP is a secure application level protocol used for distributed printing that
 leverages Internet technologies.  The protocol allows a Client to inquire about
 capabilities of and defaults for a Printer (supported media sizes, two-sided
 printing, etc.), inquire about the state of the Printer (paper out/jam, low
