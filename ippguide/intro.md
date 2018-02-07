@@ -5,24 +5,20 @@ Introduction
 What is IPP?
 ------------
 
-IPP is an application level protocol used for distributed printing that
-leverages Internet technologies.  The protocol allows a Client to inquire about
-capabilities of and defaults for a Printer (supported media sizes, two-sided
-printing, etc.), inquire about the state of the Printer (paper out/jam, low
-ink/toner, etc.), submit files for printing, and inquire about and cancel
-submitted print Jobs.
+IPP - the Internet Printing Protocol - is an application level protocol that
+enables a Client to communicate with a Printer using a rich vocabulary of operations and descriptive attributes. IPP allows a Client to inquire about the Printer's attributes (name, printer UUID, make and model, security capabilities, and many others), acquire a description of the Printer's capabilities and default job settings (supported media sizes and types, two-sided printing, etc.), create Jobs to submit files for printing, inquire about and manage or cancel submitted print Jobs, and monitor the state of the Printer (paper out/jam, low ink/toner, etc.). IPP supports not only print but also fax and scan, and has extensions that support the creation of complex print system interactions.
 
 IPP was first developed by a working group in the Internet Engineering Task
-Force (IETF) in 1998 and continues to be developed and maintained by the
+Force (IETF) in 1998. IPP continues to be developed and maintained by the
 [Printer Working Group](https://www.pwg.org/ipp), a program of the IEEE
-Industry Standard and Technology Organization (IEEE-ISTO).  IPP is supported by
-almost all printers sold today.
+Industry Standard and Technology Organization (IEEE-ISTO), through the publication of its own standards such as [IPP/2.0](http://ftp.pwg.org/pub/pwg/standards/std-ipp20-20151030-5100.12.pdf), as well as maintaining and updating the IETF RFCs including [RFC 8010](https://tools.ietf.org/html/rfc8010), [RFC 8011](https://tools.ietf.org/html/rfc8011) and [RFC 7472](https://tools.ietf.org/html/rfc7472).
+
+IPP is supported by almost all printers sold today. Its rich suite of semantics and descriptive capabilities allow IPP to replace all vendor-specific network printing protocols, including "PDL Datastream" (port 9100) and LPD/lpr. Several universal print ecosystems have been built around IPP, including the PWG's own [IPP Everywhere™](http://ftp.pwg.org/pub/pwg/candidates/cs-ippeve10-20130128-5100.14.pdf).
 
 IPP is heavily influenced by the printing model first introduced in the
 Document Printing Application (ISO 10175) standard.  The same model is exposed
 by the SNMP Printer and Job Monitoring MIBs, the PWG Semantic Model, and
-Microsoft's Web Services Print.  IPP replaces all vendor-specific network
-protocols, including port 9100 printing and LPD/lpr.
+Microsoft's Web Services Print.
 
 IPP is widely implemented, including the following open source projects:
 
@@ -31,6 +27,9 @@ IPP is widely implemented, including the following open source projects:
 - [Javascript IPP Client Implementation](https://github.com/williamkapke/ipp)
 - [Python IPP Client Implementation](http://www.pykota.com/software/pkipplib/)
 - [PWG IPP Sample Code](https://istopwg.github.io/ippsample)
+
+
+
 
 
 IPP Overview
