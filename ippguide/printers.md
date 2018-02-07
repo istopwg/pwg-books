@@ -16,10 +16,18 @@ What are Printers?
 Printer Description Attributes
 ------------------------------
 
-- Important attributes: printer-geo-location, printer-location,
-  printer-make-and-model, printer-more-info, printer-name,
-  printer-supply-info-uri, printer-uri-supported, printer-xri-supported,
-  uri-authentication-supported, uri-security-supported, others?
+- Important attributes:
+  - printer-name
+  - printer-uuid
+  - printer-make-and-model
+  - printer-more-info
+  - printer-geo-location
+  - printer-location
+  - printer-supply-info-uri
+  - printer-uri-supported
+  - printer-xri-supported,
+  - uri-authentication-supported
+  - uri-security-supported
 
 
 Printer Status Attributes
@@ -37,8 +45,10 @@ Printer Capability Attributes
   printer-resolution, sides
 
 
-Check Job and Printer Status
-----------------------------
+Common Tasks
+------------
+
+### Check Job and Printer Status
 
 - Polling with Get-Printer-Attributes, Get-Jobs, Get-Job-Attributes
 
