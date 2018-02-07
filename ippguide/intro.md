@@ -9,20 +9,10 @@ IPP is an application level protocol used for distributed printing that
 leverages Internet technologies.  The protocol allows a Client to inquire about
 capabilities of and defaults for a Printer (supported media sizes, two-sided
 printing, etc.), inquire about the state of the Printer (paper out/jam, low
-ink/toner, etc.), submit files for printing, and inquire about and cancel
-submitted print Jobs.
-
-IPP was first developed by a working group in the Internet Engineering Task
-Force (IETF) in 1998 and continues to be developed and maintained by the
-[Printer Working Group](https://www.pwg.org/ipp), a program of the IEEE
-Industry Standard and Technology Organization (IEEE-ISTO).  IPP is supported by
-almost all printers sold today.
-
-IPP is heavily influenced by the printing model first introduced in the
-Document Printing Application (ISO 10175) standard.  The same model is exposed
-by the SNMP Printer and Job Monitoring MIBs, the PWG Semantic Model, and
-Microsoft's Web Services Print.  IPP replaces all vendor-specific network
-protocols, including port 9100 printing and LPD/lpr.
+ink/toner, etc.), submit files for printing, and inquire about and/or cancel
+submitted print Jobs.  IPP is supported by all modern network printers and
+replaces all legacy network protocols including port 9100 printing
+and LPD/lpr.
 
 IPP is widely implemented, including the following open source projects:
 
@@ -57,6 +47,9 @@ The corresponding IPP response is returned in the POST response message body.
 HTTP connections can be unencrypted, upgraded to TLS using an HTTP OPTIONS
 request, or encrypted immediately (HTTPS).  HTTP POST requests can be
 authenticated using any of the standard HTTP mechanisms.
+
+> Note: Legacy network protocols do not support authentication, authorization,
+> or privacy (encryption).
 
 
 Key Concepts
