@@ -33,27 +33,56 @@ Printer Description Attributes
 Printer Status Attributes
 -------------------------
 
-- Important attributes: printer-input-tray, printer-output-tray, printer-state,
-  printer-state-reasons, printer-supply, printer-supply-description, others?
+- Important attributes:
+  - printer-input-tray
+  - printer-output-tray
+  - printer-state
+  - printer-state-reasons
+  - printer-supply
+  - printer-supply-description
+  - others?
 
 
 Printer Capability Attributes
 -----------------------------
 
-- Important attributes: copies, finishings/finishings-col, media/media-col,
-  page-ranges, print-color-mode, print-quality, print-scaling,
-  printer-resolution, sides
+- Important attributes:
+  - copies
+  - finishings / finishings-col
+  - media / media-col
+  - page-ranges
+  - print-color-mode
+  - print-quality
+  - print-scaling
+  - printer-resolution
+  - sides
 
 
 Common Tasks
 ------------
 
+### Get a Printer's capabilities
+- Get-Printer-Attributes
+
+### Create a Job and Submit for Processing
+- Create-Job
+- Send-Document
+
 ### Check Job and Printer Status
 
-- Polling with Get-Printer-Attributes, Get-Jobs, Get-Job-Attributes
+- Polling
+  - Get-Printer-Attributes
+  - Get-Jobs
+  - Get-Job-Attributes
+- Subscriptions and Events
 
-- ipptool examples
+Examples
+-----------
 
-- CUPS API examples
+### ipptool examples
 
-- Node.js examples
+
+### CUPS API examples
+
+
+### Node.js examples
