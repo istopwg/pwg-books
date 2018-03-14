@@ -1,5 +1,5 @@
-Map of IPP Standards
-====================
+Chapter 4: Map of IPP Standards
+===============================
 
 - Graphical diagram? listing PWG and IETF IPP standards
 

@@ -1,5 +1,5 @@
-Print Jobs
-==========
+Chapter 3: Print Jobs
+=====================
 
 
 What are Print Jobs?
