@@ -1,11 +1,11 @@
 ---
 title: How to Use the Internet Printing Protocol
 author: Michael R Sweet, Peter Zehler
-copyright: Copyright 2017-2018 by The Printer Working Group
+copyright: Copyright © 2017-2018 by The Printer Working Group
 ...
 
-Introduction
-============
+Chapter 1: Introduction
+=======================
 
 
 What is IPP?
@@ -87,189 +87,87 @@ URIs.  Attributes are also placed in groups according to their usage -
 the operation group for attributes used for the operation request or response,
 the job group for print job attributes, and so forth.
 
-```
-; IPP/2.0 request header for Print-Job request
-02 00                  ; IPP version 2.0
-00 02                  ; Print-Job operation code
-00 00 00 2A            ; Request number 42
-
-; Start of the operation attributes
-01                     ; "operation-attributes-tag"
-```
-
 The first two attributes in an IPP message are always "attributes-charset",
 which defines the character set to use for all name and text strings, and
 "attributes-natural-language", which defines the default language ("en" for
 English, "fr" for French, "ja" for Japanese, etc.) for those strings.
 
-```
-; "attributes-charset" = 'utf-8'
-47                     ; "charset" tag
-00 12                  ; name length 18 bytes
-"attributes-charset"   ; attribute name
-00 05                  ; value length 5 bytes
-'utf-8'                ; value string
-
-; "attributes-natural-language" = 'en'
-48                     ; "naturalLanguage" tag
-00 1B                  ; name length 27 bytes
-"attributes-natural-language"
-                       ; attribute name
-00 02                  ; value length 2 bytes
-'en'                   ; value string
-```
-
-The next attributes in a request are usually the printer's URI ("printer-uri")
-and, if the request is targeting a print job, the job's ID number ("job-id").
-
-```
-; "printer-uri" = 'ipp://printer.example.com/ipp/print'
-45                     ; "uri" tag
-00 0B                  ; name length 11 bytes
-"printer-uri"          ; attribute name
-00 23                  ; value length 35 bytes
-'ipp://printer.example.com/ipp/print'
-                       ; value string
-```
+The next attributes in a request are the printer's URI ("printer-uri") and, if
+the request is targeting a print job, the job's ID number ("job-id").
 
 Most requests include the name of the user that is submitting the request
 ("requesting-user-name").
 
-```
-; "requesting-user-name" = 'John Doe'
-42                     ; "nameWithoutLanguage" tag
-00 14                  ; name length 20 bytes
-"requesting-user-name" ; attribute name
-00 08                  ; value length 8 bytes
-'John Doe'             ; value string
-```
-
 A request containing an attached print file includes the MIME media type for
-the file - 'text/plain' for text files, 'application/pdf' for PDF files, etc.
+the file ("document-format").  The media type is 'text/plain' for text files,
+'image/jpeg' for JPEG files, 'application/pdf' for PDF files, etc.
+
+The following example encodes a Print-Job request using the `ipptool` test file
+format:
 
 ```
-; "document-format" = 'text/plain'
-49                     ; "mimeMediaType" tag
-00 0F                  ; name length 15 bytes
-"document-format"      ; attribute name
-00 0A                  ; value length 10 bytes
-"text/plain"           ; value string
-```
+{
+    VERSION 2.0
+    OPERATION Print-Job
+    REQUEST-ID 42
 
-At the end of the IPP request is the "end-of-attributes" tag, which is followed
-by any print data.
-
-```
-03                     ; "end-of-attributes-tag"
-
-; Start of print data
-"Hello, world!"
-0D 0A
-"Now is the time for all good men to come to the aid of their country."
-0D 0A
-...
+    GROUP operation-attributes-tag
+    ATTR charset "attributes-charset" "utf-8"
+    ATTR naturalLanguage "attributes-natural-language" "en"
+    ATTR uri "printer-uri" "ipp://printer.example.com/ipp/print"
+    ATTR name "requesting-user-name" "John Doe"
+    ATTR mimeMediaType "document-format" "text/plain"
+    FILE "testfile.txt"
+}
 ```
 
 The response message uses the same version number, request number, character
 set, and natural language values as the request.  A status code replaces the
-operation code in the initial message header.
+operation code in the initial message header - for the Print-Job operation the
+printer will return the 'successful-ok' status code if the print request is
+successful or 'server-error-printer-busy' if the printer is busy and wants you
+to try again at a later time.
 
-```
-; IPP/2.0 response header for Print-Job request
-02 00                  ; IPP version 2.0
-00 00                  ; successful-ok status code
-00 00 00 2A            ; Request number 42
+The character set and natural language values in the response are followed by
+operation-specific attributes.  For example, the Print-Job operation returns the
+print job identifier ("job-id") and state ("job-state" and "job-state-reasons")
+attributes.
 
-; Start of the operation attributes
-01                     ; "operation-attributes-tag"
-
-; "attributes-charset" = 'utf-8'
-47                     ; "charset" tag
-00 12                  ; name length 18 bytes
-"attributes-charset"   ; attribute name
-00 05                  ; value length 5 bytes
-'utf-8'                ; value string
-
-; "attributes-natural-language" = 'en'
-48                     ; "naturalLanguage" tag
-00 1B                  ; name length 27 bytes
-"attributes-natural-language"
-                   ; attribute name
-00 02                  ; value length 2 bytes
-'en'                   ; value string
-```
-
-These are followed by operation-specific attributes.  For example, the Print-Job
-operation returns the print job identification and state attributes.
-
-```
-; Start of the job attributes
-02                     ; "job-attributes-tag"
-
-; "job-printer-uri" = 'ipp://printer.example.com/ipp/print'
-45                     ; "uri" tag
-00 0F                  ; name length 15 bytes
-"job-printer-uri"      ; attribute name
-00 23                  ; value length 35 bytes
-'ipp://printer.example.com/ipp/print'
-                       ; value string
-
-; "job-id" = 123
-21                     ; "integer" tag
-00 06                  ; name length 6 bytes
-"job-id"               ; attribute name
-00 04                  ; value length 4 bytes
-00 00 00 7B            ; value integer
-
-; "job-state" = 5 (processing)
-23                     ; "enum" tag
-00 09                  ; name length 9 bytes
-"job-state"            ; attribute name
-00 04                  ; value length 4 bytes
-00 00 00 05            ; value integer
-
-; "job-state-reasons" = 'job-printing','waiting-for-user-action'
-44                     ; "keyword" tag
-00 10                  ; name length 16 bytes
-"job-state-reasons"    ; attribute name
-00 0C                  ; value length 12 bytes
-"job-printing"         ; value string
-44                     ; "keyword" tag
-00 00                  ; name length 0 bytes (another value)
-00 17                  ; value length 23 bytes
-"waiting-for-user-action"
-                       ; value string
-
-03                     ; "end-of-attributes-tag"
-```
-
-
+> You can learn more about the IPP message encoding by reading the
+> [Internet Printing Protocol/1.1: Encoding and Transport](https://tools.ietf.org/html/rfc8010)
+> document.
 
 
 Operations
 ----------
 
-- List some common operations
+There are literally dozens of operations defined for IPP.  The following are
+the most commonly used and are described in the following chapters:
 
-- Show how client does a POST with application/ipp messages, gets a response in
-  the same format.
+- Create-Job: Create a new (empty) print job.
 
-- Operation code in request, status code in response, request ID and version in
-  both.
+- Send-Document: Add a document to a print job.
+
+- Print-Job: Create a new print job with a single document.
+
+- Get-Printer-Attributes: Get printer status and capabilities.
+
+- Get-Jobs: Get a list of queued jobs.
+
+- Get-Job-Attributes: Get job status and options.
+
+- Cancel-Job: Cancel a queued job.
+
+Clients typically use the Create-Job and Send-Document operations to submit
+files for printing so that these print jobs can be canceled while the document
+data is being transferred to the printer.
 
 
-Attributes
-----------
+Summary
+-------
 
-- Name, type ("syntax"), and zero or more values.
-- List of (common) syntaxes
-- Examples
-
-
-### Attribute Groups
-
-- Used to group zero or more related attributes.
-
-- Groups for operation (request/response), Printer, Job, etc.
-
-- Special "end of attributes" group at the end of the IPP message.
+IPP is a widely implemented and secure application level protocol used for
+network printing.  IPP defines an abstract model for printing that allows a
+generic client application to communicate with any type of printer.  IPP uses
+HTTP or HTTPS POST requests with binary encoded messages to perform a variety of
+printing functions.  IPP supports multiple languages and file formats.
