@@ -143,6 +143,21 @@ ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, "document-format",
              NULL, "text/plain");
 
 response = cupsDoFileRequest(http, request, "/ipp/print", "testfile.txt");
+
+ipp_attribute_t *attr;
+const char *name;
+char value[2048];
+
+for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response))
+{
+  name = ippGetName(attr);
+
+  if (name)
+  {
+    ippAttributeString(attr, name, sizeof(name));
+    printf("%s=%s\n", name, value);
+  }
+}
 ```
 
 And this is how you'd send a Print-Job request using the nodejs API:
