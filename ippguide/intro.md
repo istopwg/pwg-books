@@ -121,6 +121,58 @@ format:
 }
 ```
 
+The same request using the CUPS API would look like the following:
+
+```
+#include <cups/cups.h>
+
+...
+
+http_t *http;
+ipp_t *request, *response;
+
+http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC,
+                    HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+
+request = ippNewRequest(IPP_OP_PRINT_JOB);
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL,
+             "ipp://printer.example.com/ipp/print");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, "requesting-user-name",
+             NULL, "John Doe");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, "document-format",
+             NULL, "text/plain");
+
+response = cupsDoFileRequest(http, request, "/ipp/print", "testfile.txt");
+```
+
+And this is how you'd send a Print-Job request using the nodejs API:
+
+```
+var ipp = require("ipp");
+var printer = ipp.Printer("http://printer.example.com:631/ipp/print");
+var fs = require("fs");
+var document;
+
+fs.readFile("testfile.txt", function(err, data) {
+  if (err) throw err;
+
+  document = data;
+});
+
+var msg = {
+  "operation-attributes-tag": {
+    "requesting-user-name": "John Doe",
+    "document-format": "text/plain"
+  },
+  data: document;
+};
+
+printer.execute("Print-Job", msg, function(err, res) {
+        console.log(err);
+        console.log(res);
+});
+```
+
 The response message uses the same version number, request number, character
 set, and natural language values as the request.  A status code replaces the
 operation code in the initial message header - for the Print-Job operation the
