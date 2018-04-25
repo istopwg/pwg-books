@@ -9,6 +9,7 @@ body {
   font-family: sans-serif;
   font-size: 18px;
   line-height: 1.5em;
+  margin: 20px 40px;
 }
 h1 {
   border-top: solid 2px black;
@@ -18,21 +19,6 @@ h1 {
 }
 h1.title:first-child {
   border-top: none;
-}
-@media print {
-  h1 {
-    border-top: none;
-    margin-top: 0;
-    padding-top: 0;
-    page-break-before: left;
-  }
-  h1.title:first-child {
-    padding-top: 10em;
-    page-break-before: avoid;
-  }
-  pre {
-    page-break-inside: avoid;
-  }
 }
 .title {
   text-align: center;
@@ -71,7 +57,7 @@ table {
 }
 td {
   border: solid thin #ccc;
-  padding-top: 5px;
+  padding: 5px 10px 0px;
 }
 td.left {
   text-align: left;
@@ -88,6 +74,37 @@ th {
   border-bottom: solid thin #999;
   padding: 1px 5px;
   text-align: center;
+}
+
+@page {
+  margin: 72pt 54pt;
+  @top-center { content: "How to Use the Internet Printing Protocol" }
+  @bottom-left { content: "Copyright © 2017-2018 by The Printer Working Group"; }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); }
+}
+
+@media print {
+  body {
+    margin: 0;
+  }
+
+  h1 {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+    page-break-before: left;
+  }
+  h1.title:first-child {
+    padding-top: 10em;
+    page-break-before: avoid;
+  }
+  p {
+    orphans: 1;
+  }
+  pre {
+    page-break-inside: avoid;
+    white-space: pre-wrap;
+  }
 }
 --></style>
   </head>
@@ -121,7 +138,11 @@ th {
         <li class="toc"><a href="#further-reading">Further Reading</a><ul>
         </ul></li>
       </ul></li>
-      <li class="toc"><a href="#chapter-4-map-of-ipp-standards">Chapter 4: Map of IPP Standards</a></li>
+      <li class="toc"><a href="#appendix-a-map-of-ipp-standards">Appendix A: Map of IPP Standards</a><ul>
+        <li class="toc"><a href="#core-standards">Core Standards</a></li>
+        <li class="toc"><a href="#definitions-of-core-job-template-attributes">Definitions of Core Job Template Attributes</a></li>
+        <li class="toc"><a href="#printer-specific-features">Printer-Specific Features</a></li>
+      </ul></li>
 	 </ul>
 	<h1 id="chapter-1-introduction">Chapter 1: Introduction</h1>
 	<h2 id="what-is-ipp">What is IPP?</h2>
@@ -408,23 +429,88 @@ printer.execute(&quot;Get-Printer-Attributes&quot;, msg, function(err, res) {
 </ul>
 	<h2 id="further-reading">Further Reading</h2>
 	<p>Links to additional reading - IIG 2, etc.</p>
-	<h1 id="chapter-4-map-of-ipp-standards">Chapter 4: Map of IPP Standards</h1>
+	<h1 id="appendix-a-map-of-ipp-standards">Appendix A: Map of IPP Standards</h1>
+	<h2 id="core-standards">Core Standards</h2>
+	<p>These are the core Internet Printing Protocol standards:</p>
 	<ul>
-	<li>Graphical diagram? listing PWG and IETF IPP standards</li>
-	<li>Focus on 2D</li>
-	<li>Highlight commonly implemented standards</li>
-	<li>Group into functional areas - features (stapling, collation, print quality, stored jobs, etc.)</li>
-	<li>What attribute/operation/value should I be using?</li>
-	<li>Some standards may be listed multiple times.</li>
-	<li>Link/copy of IANA IPP registry? Index of attributes generated from IANA IPP registry?</li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippeve10-20130128-5100.14.pdf">IPP Everywhere (PWG 5100.14)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/standards/std-ipp20-20151030-5100.12.pdf">IPP 2.0, 2.1, and 2.2 (PWG 5100.12)</a></li>
+	<li>IPP 1.1 - <a href="https://tools.ietf.org/html/rfc8010">Encoding and Transport (RFC 8010)</a> - <a href="https://tools.ietf.org/html/rfc8011">Model and Semantics (RFC 8011)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippig20-20150821-5100.19.pdf">IPP Implementor's Guide (PWG 5100.19)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn20-20130328-5101.1.pdf">Media Names (PWG 5101.1)</a></li>
 </ul>
-	<p>RFC2567F.D. Wright, &amp;quot; Design Goals for an Internet Printing Protocol &amp;quot;, RFC 2567, April 1999, <a href="https://tools.ietf.org/html/rfc2567">https://tools.ietf.org/html/rfc2567</a></p>
-	<p>RFC2568S. Zilles, &amp;quot;Rationale for the Structure of the Model and Protocol for the Internet Printing Protocol&amp;quot;, RFC 2568, April 1999, <a href="https://tools.ietf.org/html/rfc2568">https://tools.ietf.org/html/rfc2568</a></p>
-	<p>RFC2569R. Herriot, N. Jacobs, T. Hastings, J. Martin, &amp;quot;Mapping between LPD and IPP Protocols&amp;quot;, RFC 2569, April 1999, <a href="https://tools.ietf.org/html/rfc2569">https://tools.ietf.org/html/rfc2569</a></p>
-	<p>RFC2707R. Bergman, T. Hastings, S. Isaacson, H. Lewis, &amp;quot;Job Monitoring MIB v1&amp;quot;, RFC 2707, November 1999, <a href="https://tools.ietf.org/html/rfc2707">https://tools.ietf.org/html/rfc2707</a></p>
-	<p>RFC2790S. Waldbusser, P. Grillo, &amp;quot;Host Resources MIB&amp;quot;, RFC 2790, March 2000, <a href="https://tools.ietf.org/html/rfc2790">https://tools.ietf.org/html/rfc2790</a></p>
-	<p>RFC3805R. Bergman, H. Lewis, I. McDonald, &amp;quot;Printer MIB v2&amp;quot;, RFC 3805, June 2004, <a href="https://tools.ietf.org/html/rfc3805">https://tools.ietf.org/html/rfc3805</a></p>
-	<p>ISO10175ISO/IEC 10175, Document Printing Application, June 1996.</p>
-	<p>WS-PRINTWS-Print, Print Service Definition Version 1.2, July 2013, <a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/print/ws-print-v1-1">https://docs.microsoft.com/en-us/windows-hardware/drivers/print/ws-print-v1-1</a></p>
+	<p>The <a href="https://www.iana.org/assignments/ipp-registrations">IANA IPP Registry</a> provides a list of all IPP attributes, values, operations, and status codes with links to the corresponding standards.</p>
+	<h2 id="definitions-of-core-job-template-attributes">Definitions of Core Job Template Attributes</h2>
+	<p>The following table lists the core Job Template attributes that are supported by most IPP printers. You can query the corresponding &quot;xxx-supported&quot; attributes using the Get-Printer-Attributes operation.</p>
+	<blockquote>
+	<p>Note: The syntax column uses the standard IPP data types. A &quot;1setOf&quot; something is an array of one or more values.</p>
+</blockquote>
+	<table>	<thead>	<tr>	<th> Attribute</th>
+	<th> Syntax</th>
+	<th> Standard</th>
+</tr>
+</thead>
+	<tbody>	<tr>	<td> copies</td>
+	<td> integer</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> finishings</td>
+	<td> 1setOf enum</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf">PWG 5100.1</a></td>
+</tr>
+	<tr>	<td> finishings-col</td>
+	<td> 1setOf collection</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf">PWG 5100.1</a></td>
+</tr>
+	<tr>	<td> media</td>
+	<td> keyword</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> media-col</td>
+	<td> collection</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf">PWG 5100.3</a></td>
+</tr>
+	<tr>	<td> output-bin</td>
+	<td> keyword</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf">PWG 5100.2</a></td>
+</tr>
+	<tr>	<td> page-ranges</td>
+	<td> rangeOfInteger</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> print-color-mode</td>
+	<td> keyword</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">PWG 5100.13</a></td>
+</tr>
+	<tr>	<td> print-quality</td>
+	<td> enum</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> print-scaling</td>
+	<td> keyword</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">PWG 5100.13</a></td>
+</tr>
+	<tr>	<td> printer-resolution</td>
+	<td> resolution</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> sides</td>
+	<td> keyword</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+</tbody>
+</table>
+	<h2 id="printer-specific-features">Printer-Specific Features</h2>
+	<p>These are the Internet Printing Protocol standards that define how to support specific printer features:</p>
+	<ul>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf">Cloud Printing (PWG 5100.18)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">Extended Options (PWG 5100.13)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20140618-5100.15.pdf">Fax Output (PWG 5100.15)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf">Stapling, Folding, Punching, and Other Finishings (PWG 5100.1)</a></li>
+	<li>Notifications - <a href="https://tools.ietf.org/html/rfc3995">Model (RFC 3995)</a> - <a href="https://tools.ietf.org/html/rfc3996">Get-Notifications Operation (RFC 3996)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf">Output Bins (PWG 5100.2)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ipppageoverride10-20031031-5100.6.pdf">Page Overrides (PWG 5100.6)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ipptrans10-20131108-5100.16.pdf">Paid Printing (PWG 5100.16)</a></li>
+</ul>
 	 </body>
 </html>

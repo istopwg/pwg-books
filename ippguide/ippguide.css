@@ -2,6 +2,7 @@ body {
   font-family: sans-serif;
   font-size: 18px;
   line-height: 1.5em;
+  margin: 20px 40px;
 }
 h1 {
   border-top: solid 2px black;
@@ -49,7 +50,7 @@ table {
 }
 td {
   border: solid thin #ccc;
-  padding-top: 5px;
+  padding: 5px 10px 0px;
 }
 td.left {
   text-align: left;
@@ -68,7 +69,18 @@ th {
   text-align: center;
 }
 
+@page {
+  margin: 72pt 54pt;
+  @top-center { content: "How to Use the Internet Printing Protocol" }
+  @bottom-left { content: "Copyright © 2017-2018 by The Printer Working Group"; }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); }
+}
+
 @media print {
+  body {
+    margin: 0;
+  }
+
   h1 {
     border-top: none;
     margin-top: 0;
@@ -79,7 +91,11 @@ th {
     padding-top: 10em;
     page-break-before: avoid;
   }
+  p {
+    orphans: 1;
+  }
   pre {
     page-break-inside: avoid;
+    white-space: pre-wrap;
   }
 }
