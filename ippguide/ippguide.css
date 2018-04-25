@@ -21,6 +21,14 @@ h1.title:first-child {
 a {
   font: inherit;
 }
+blockquote {
+  background: #f8f8f8;
+  border-left: solid thick #666;
+  border-right: solid thick #666;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 10px 40px;
+}
 pre, li code, p code {
   font-family: monospace;
   font-size: 14px;
