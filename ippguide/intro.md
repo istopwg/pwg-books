@@ -2,6 +2,7 @@
 title: How to Use the Internet Printing Protocol
 author: Michael R Sweet, Peter Zehler
 copyright: Copyright © 2017-2018 by The Printer Working Group
+version: 2018.0426
 ...
 
 Chapter 1: Introduction
@@ -35,9 +36,10 @@ IPP Overview
 
 The IPP architecture defines an abstract, hierarchical data model that provides
 information about the printing process and the print jobs and capabilities of
-the printer.  Because the semantics of IPP are attached to this model, the
-client (software) does not need to know the internal details of the printer
-(hardware).
+the printer.  It also defines operations with common semantics (business logic)
+for working with the objects in this data model.  Because the semantics of IPP
+are followed by all printers, the client (software) does not need to know the
+internal details of the printer (hardware).
 
 IPP uses HTTP as its transport protocol.  Each IPP request is a HTTP POST with
 an IPP message (and print file, if any) in the request message body.  The

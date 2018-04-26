@@ -32,11 +32,11 @@ blockquote {
 }
 pre, li code, p code {
   font-family: monospace;
-  font-size: 14px;
 }
 pre {
   background: #f8f8f8;
   border: solid thin #666;
+  font-size: 14px;
   line-height: 120%;
   padding: 10px;
 }

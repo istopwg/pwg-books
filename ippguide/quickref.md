@@ -21,6 +21,7 @@ attributes.  Each request always starts with the following three attributes:
 
 | Operation              | Required Attributes (syntax)                  | Optional Attributes (syntax)
 |------------------------|-----------------------------------------------|-----------------------------------------------
+| Cancel-Job             | job-id (integer), requesting-user-name (name) |
 | Create-Job             | requesting-user-name (name), job-name (name)  | [Job Attributes](#common-job-attributes)
 | Get-Job-Attributes     | job-id (integer), requesting-user-name (name) | requested-attributes (1setOf keyword)
 | Get-Jobs               | requesting-user-name (name)                   | my-jobs (boolean), requested-attributes (1setOf keyword), which-jobs (keyword)
@@ -36,11 +37,12 @@ The "document-format" attribute specifies the format of a print file.  The
 following is a list of common formats used for printing:
 
 - "application/pdf": Portable Document Format (PDF) files.
-- "application/vnd.hp-pcl": HP Page Control Language (PCL) files.
+- "application/postscript": Adobe PostScript files (legacy).
+- "application/vnd.hp-pcl": HP Page Control Language (PCL) files (legacy).
 - "image/jpeg": JPEG images.
 - "image/pwg-raster": PWG Raster Format files.
-- "image/urf": Apple Raster files.
-- "text/plain": Plain (ASCII) text with CR LF line endings.
+- "image/urf": Apple Raster files (AirPrint).
+- "text/plain": Plain (ASCII) text with CR LF line endings (legacy).
 
 
 Common Job Attributes
@@ -86,23 +88,37 @@ operation.
 > Note: The syntax uses the standard IPP data types.  A "1setOf something" is
 > an array of one or more values.
 
-| Printer Attribute (Syntax)                       | Standard
-|--------------------------------------------------|------------------------------------------------
+| Printer Attribute (Syntax)                                   | Standard
+|--------------------------------------------------------------|------------------------------------------------
 | document-format-supported (1setOf mimeMediaType)             | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 | ipp-features-supported (1setOf keyword)                      | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
 | ipp-versions-supported (1setOf keyword)                      | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| job-creation-attributes-supported (1setOf keyword)           | [PWG 5100.11](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf)
 | operations-supported (1setOf enum)                           | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-alert (1setOf octetString)                           | [PWG 5100.9](https://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf)
+| printer-alert-description (1setOf text)                      | [PWG 5100.9](https://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf)
+| printer-geo-location (uri)                                   | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
 | printer-info (text)                                          | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-input-tray (1setOf octetString)                      | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
 | printer-is-accepting-jobs (boolean)                          | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 | printer-location (text)                                      | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 | printer-make-and-model (text)                                | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 | printer-more-info (uri)                                      | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 | printer-name (name)                                          | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-output-tray (1setOf octetString)                     | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
 | printer-state (enum)                                         | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 | printer-state-reasons (1setOf keyword)                       | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-strings-languages-supported (1setOf naturalLanguage) | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| printer-strings-uri (uri)                                    | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| printer-supply (1setOf octetString)                          | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| printer-supply-description (1setOf text)                     | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| printer-supply-info-uri (uri)                                | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| printer-uri-supported (1setOf uri)                           | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 | pwg-raster-document-resolution-supported (1setOf resolution) | [PWG 5102.4](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf)
 | pwg-raster-document-sheet-back (keyword)                     | [PWG 5102.4](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf)
 | pwg-raster-document-type-supported (1setOf keyword)          | [PWG 5102.4](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf)
+| uri-authentication-supported (1setOf keyword)                | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| uri-security-supported (1setOf keyword)                      | [RFC 8011](https://tools.ietf.org/html/rfc8011)
 
 
 Standards
@@ -115,7 +131,6 @@ links to the corresponding standards.
 These are the core Internet Printing Protocol standards:
 
 - [IPP Everywhere (PWG 5100.14)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippeve10-20130128-5100.14.pdf)
-- [Extended Options (PWG 5100.13)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
 - [IPP 2.0, 2.1, and 2.2 (PWG 5100.12)](https://ftp.pwg.org/pub/pwg/standards/std-ipp20-20151030-5100.12.pdf)
 - IPP 1.1 - [Encoding and Transport (RFC 8010)](https://tools.ietf.org/html/rfc8010) - [Model and Semantics (RFC 8011)](https://tools.ietf.org/html/rfc8011)
 - [IPP Implementor's Guide (PWG 5100.19)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippig20-20150821-5100.19.pdf)
@@ -129,7 +144,9 @@ These are the standards for media naming and the common file formats:
 These are the Internet Printing Protocol standards that define how to support
 specific printer features:
 
+- [Alerts (PWG 5100.9)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippstate10-20090731-5100.9.pdf)
 - [Cloud Printing (PWG 5100.18)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf)
+- Extended Options - [Set 2 (PWG 5100.11)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext10-20101030-5100.11.pdf) - [Set 3 (PWG 5100.13)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
 - [Fax Output (PWG 5100.15)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20140618-5100.15.pdf)
 - [Stapling, Folding, Punching, and Other Finishings (PWG 5100.1)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf)
 - Notifications - [Model (RFC 3995)](https://tools.ietf.org/html/rfc3995) - [Get-Notifications Operation (RFC 3996)](https://tools.ietf.org/html/rfc3996)
