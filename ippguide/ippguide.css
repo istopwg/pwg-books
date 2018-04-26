@@ -50,7 +50,8 @@ table {
 }
 td {
   border: solid thin #ccc;
-  padding: 5px 10px 0px;
+  padding: 5px 10px;
+  vertical-align: top;
 }
 td.left {
   text-align: left;
@@ -67,6 +68,7 @@ th {
   border-bottom: solid thin #999;
   padding: 1px 5px;
   text-align: center;
+  vertical-align: bottom;
 }
 
 @page {

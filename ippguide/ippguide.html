@@ -57,7 +57,8 @@ table {
 }
 td {
   border: solid thin #ccc;
-  padding: 5px 10px 0px;
+  padding: 5px 10px;
+  vertical-align: top;
 }
 td.left {
   text-align: left;
@@ -74,6 +75,7 @@ th {
   border-bottom: solid thin #999;
   padding: 1px 5px;
   text-align: center;
+  vertical-align: bottom;
 }
 
 @page {
@@ -138,10 +140,12 @@ th {
         <li class="toc"><a href="#further-reading">Further Reading</a><ul>
         </ul></li>
       </ul></li>
-      <li class="toc"><a href="#appendix-a-map-of-ipp-standards">Appendix A: Map of IPP Standards</a><ul>
-        <li class="toc"><a href="#core-standards">Core Standards</a></li>
-        <li class="toc"><a href="#definitions-of-core-job-template-attributes">Definitions of Core Job Template Attributes</a></li>
-        <li class="toc"><a href="#printer-specific-features">Printer-Specific Features</a></li>
+      <li class="toc"><a href="#appendix-a-quick-reference">Appendix A: Quick Reference</a><ul>
+        <li class="toc"><a href="#common-operations">Common Operations</a></li>
+        <li class="toc"><a href="#common-document-formats">Common Document Formats</a></li>
+        <li class="toc"><a href="#common-job-attributes">Common Job Attributes</a></li>
+        <li class="toc"><a href="#common-printer-attributes">Common Printer Attributes</a></li>
+        <li class="toc"><a href="#standards">Standards</a></li>
       </ul></li>
 	 </ul>
 	<h1 id="chapter-1-introduction">Chapter 1: Introduction</h1>
@@ -429,82 +433,193 @@ printer.execute(&quot;Get-Printer-Attributes&quot;, msg, function(err, res) {
 </ul>
 	<h2 id="further-reading">Further Reading</h2>
 	<p>Links to additional reading - IIG 2, etc.</p>
-	<h1 id="appendix-a-map-of-ipp-standards">Appendix A: Map of IPP Standards</h1>
-	<h2 id="core-standards">Core Standards</h2>
-	<p>These are the core Internet Printing Protocol standards:</p>
+	<h1 id="appendix-a-quick-reference">Appendix A: Quick Reference</h1>
+	<h2 id="common-operations">Common Operations</h2>
+	<p>The following table lists the common IPP operations (all defined in <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a>) and the commonly-used attributes. Each request always starts with the following three attributes:</p>
 	<ul>
-	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippeve10-20130128-5100.14.pdf">IPP Everywhere (PWG 5100.14)</a></li>
-	<li><a href="https://ftp.pwg.org/pub/pwg/standards/std-ipp20-20151030-5100.12.pdf">IPP 2.0, 2.1, and 2.2 (PWG 5100.12)</a></li>
-	<li>IPP 1.1 - <a href="https://tools.ietf.org/html/rfc8010">Encoding and Transport (RFC 8010)</a> - <a href="https://tools.ietf.org/html/rfc8011">Model and Semantics (RFC 8011)</a></li>
-	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippig20-20150821-5100.19.pdf">IPP Implementor's Guide (PWG 5100.19)</a></li>
-	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn20-20130328-5101.1.pdf">Media Names (PWG 5101.1)</a></li>
+	<li>&quot;attributes-charset (charset)&quot;: Usually &quot;utf-8&quot;.</li>
+	<li>&quot;attributes-natural-language (naturalLanguage)&quot;: Often just &quot;en&quot;, the format is either &quot;ll&quot; or &quot;ll-cc&quot; where &quot;ll&quot; is the two-letter language code and &quot;cc&quot; is the country/region code.</li>
+	<li>&quot;printer-uri (uri)&quot;: Usually &quot;ipp://<em>address</em>/ipp/print&quot; or &quot;ipps://<em>address</em>/ipp/print&quot;.</li>
 </ul>
-	<p>The <a href="https://www.iana.org/assignments/ipp-registrations">IANA IPP Registry</a> provides a list of all IPP attributes, values, operations, and status codes with links to the corresponding standards.</p>
-	<h2 id="definitions-of-core-job-template-attributes">Definitions of Core Job Template Attributes</h2>
-	<p>The following table lists the core Job Template attributes that are supported by most IPP printers. You can query the corresponding &quot;xxx-supported&quot; attributes using the Get-Printer-Attributes operation.</p>
 	<blockquote>
-	<p>Note: The syntax column uses the standard IPP data types. A &quot;1setOf&quot; something is an array of one or more values.</p>
+	<p>Note: The syntax uses the standard IPP data types. Except for Job attributes, all attributes are in the operation group. The &quot;document-format&quot; attribute is optional but recommended.</p>
 </blockquote>
-	<table>	<thead>	<tr>	<th> Attribute</th>
-	<th> Syntax</th>
+	<table>	<thead>	<tr>	<th> Operation</th>
+	<th> Required Attributes (syntax)</th>
+	<th> Optional Attributes (syntax)</th>
+</tr>
+</thead>
+	<tbody>	<tr>	<td> Create-Job</td>
+	<td> requesting-user-name (name), job-name (name)</td>
+	<td> <a href="#common-job-attributes">Job Attributes</a></td>
+</tr>
+	<tr>	<td> Get-Job-Attributes</td>
+	<td> job-id (integer), requesting-user-name (name)</td>
+	<td> requested-attributes (1setOf keyword)</td>
+</tr>
+	<tr>	<td> Get-Jobs</td>
+	<td> requesting-user-name (name)</td>
+	<td> my-jobs (boolean), requested-attributes (1setOf keyword), which-jobs (keyword)</td>
+</tr>
+	<tr>	<td> Get-Printer-Attributes</td>
+	<td></td>
+	<td> document-format (mimeMediaType), requested-attributes (1setOf keyword)</td>
+</tr>
+	<tr>	<td> Print-Job</td>
+	<td> requesting-user-name (name), job-name (name)</td>
+	<td> <a href="#common-job-attributes">Job Attributes</a></td>
+</tr>
+	<tr>	<td> Send-Document</td>
+	<td> job-id (integer), requesting-user-name (name)</td>
+	<td> document-format (mimeMediaType), document-name (name)</td>
+</tr>
+</tbody>
+</table>
+	<h2 id="common-document-formats">Common Document Formats</h2>
+	<p>The &quot;document-format&quot; attribute specifies the format of a print file. The following is a list of common formats used for printing:</p>
+	<ul>
+	<li>&quot;application/pdf&quot;: Portable Document Format (PDF) files.</li>
+	<li>&quot;application/vnd.hp-pcl&quot;: HP Page Control Language (PCL) files.</li>
+	<li>&quot;image/jpeg&quot;: JPEG images.</li>
+	<li>&quot;image/pwg-raster&quot;: PWG Raster Format files.</li>
+	<li>&quot;image/urf&quot;: Apple Raster files.</li>
+	<li>&quot;text/plain&quot;: Plain (ASCII) text with CR LF line endings.</li>
+</ul>
+	<h2 id="common-job-attributes">Common Job Attributes</h2>
+	<p>The following table lists the common Job attributes that are supported by most IPP printers in the Create-Job and Print-Job operations. You can query the corresponding Printer attributes using the Get-Printer-Attributes operation, just remember to send a &quot;document-format (mimeMediaType)&quot; attribute to get the values for the file format you are using.</p>
+	<blockquote>
+	<p>Note: The syntax uses the standard IPP data types. A &quot;1setOf something&quot; is an array of one or more values. The &quot;finishings-ready&quot; and &quot;media-ready&quot; Printer attributes should be used when available, otherwise use the &quot;finishings-supported&quot; and &quot;media-supported&quot; attributes. Similarly, the &quot;finishings-col-ready&quot; and &quot;media-col-ready&quot; Printer attributes should be used when available, otherwise use the &quot;finishings-col-database&quot; and &quot;media-col-database&quot; attributes.</p>
+</blockquote>
+	<table>	<thead>	<tr>	<th> Job Attribute (syntax)</th>
+	<th> Printer Attribute (Syntax)</th>
 	<th> Standard</th>
 </tr>
 </thead>
-	<tbody>	<tr>	<td> copies</td>
-	<td> integer</td>
+	<tbody>	<tr>	<td> copies (integer)</td>
+	<td> copies-supported (integer)</td>
 	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
 </tr>
-	<tr>	<td> finishings</td>
-	<td> 1setOf enum</td>
+	<tr>	<td> finishings (1setOf enum)</td>
+	<td> finishings-ready (1setOf enum)</td>
 	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf">PWG 5100.1</a></td>
 </tr>
-	<tr>	<td> finishings-col</td>
-	<td> 1setOf collection</td>
+	<tr>	<td> finishings-col (1setOf collection)</td>
+	<td> finishings-col-ready (1setOf collection)</td>
 	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf">PWG 5100.1</a></td>
 </tr>
-	<tr>	<td> media</td>
-	<td> keyword</td>
+	<tr>	<td> media (keyword)</td>
+	<td> media-ready (1setOf keyword)</td>
 	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
 </tr>
-	<tr>	<td> media-col</td>
-	<td> collection</td>
+	<tr>	<td> media-col (collection)</td>
+	<td> media-col-ready (1setOf collection)</td>
 	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf">PWG 5100.3</a></td>
 </tr>
-	<tr>	<td> output-bin</td>
-	<td> keyword</td>
+	<tr>	<td> output-bin (keyword)</td>
+	<td> output-bin-supported (1setOf keyword)</td>
 	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf">PWG 5100.2</a></td>
 </tr>
-	<tr>	<td> page-ranges</td>
-	<td> rangeOfInteger</td>
+	<tr>	<td> page-ranges (rangeOfInteger)</td>
+	<td> page-ranges-supported (boolean)</td>
 	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
 </tr>
-	<tr>	<td> print-color-mode</td>
-	<td> keyword</td>
+	<tr>	<td> print-color-mode (keyword)</td>
+	<td> print-color-mode-supported (1setOf keyword)</td>
 	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">PWG 5100.13</a></td>
 </tr>
-	<tr>	<td> print-quality</td>
-	<td> enum</td>
+	<tr>	<td> print-quality (enum)</td>
+	<td> print-quality-supported (1setOf enum)</td>
 	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
 </tr>
-	<tr>	<td> print-scaling</td>
-	<td> keyword</td>
+	<tr>	<td> print-scaling (keyword)</td>
+	<td> print-scaling-supported (1setOf keyword)</td>
 	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">PWG 5100.13</a></td>
 </tr>
-	<tr>	<td> printer-resolution</td>
-	<td> resolution</td>
+	<tr>	<td> printer-resolution (resolution)</td>
+	<td> printer-resolution-supported (1setOf resolution)</td>
 	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
 </tr>
-	<tr>	<td> sides</td>
-	<td> keyword</td>
+	<tr>	<td> sides (keyword)</td>
+	<td> sides-supported (1setOf keyword)</td>
 	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
 </tr>
 </tbody>
 </table>
-	<h2 id="printer-specific-features">Printer-Specific Features</h2>
+	<h2 id="common-printer-attributes">Common Printer Attributes</h2>
+	<p>The following table lists the common Printer attributes that are supported by most IPP printers. You can query them using the Get-Printer-Attributes operation.</p>
+	<blockquote>
+	<p>Note: The syntax uses the standard IPP data types. A &quot;1setOf something&quot; is an array of one or more values.</p>
+</blockquote>
+	<table>	<thead>	<tr>	<th> Printer Attribute (Syntax)</th>
+	<th> Standard</th>
+</tr>
+</thead>
+	<tbody>	<tr>	<td> document-format-supported (1setOf mimeMediaType)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> ipp-features-supported (1setOf keyword)</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">PWG 5100.13</a></td>
+</tr>
+	<tr>	<td> ipp-versions-supported (1setOf keyword)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> operations-supported (1setOf enum)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-info (text)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-is-accepting-jobs (boolean)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-location (text)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-make-and-model (text)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-more-info (uri)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-name (name)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-state (enum)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> printer-state-reasons (1setOf keyword)</td>
+	<td> <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a></td>
+</tr>
+	<tr>	<td> pwg-raster-document-resolution-supported (1setOf resolution)</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf">PWG 5102.4</a></td>
+</tr>
+	<tr>	<td> pwg-raster-document-sheet-back (keyword)</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf">PWG 5102.4</a></td>
+</tr>
+	<tr>	<td> pwg-raster-document-type-supported (1setOf keyword)</td>
+	<td> <a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf">PWG 5102.4</a></td>
+</tr>
+</tbody>
+</table>
+	<h2 id="standards">Standards</h2>
+	<p>The <a href="https://www.iana.org/assignments/ipp-registrations">IANA IPP Registry</a> provides a list of all IPP attributes, values, operations, and status codes with links to the corresponding standards.</p>
+	<p>These are the core Internet Printing Protocol standards:</p>
+	<ul>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippeve10-20130128-5100.14.pdf">IPP Everywhere (PWG 5100.14)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">Extended Options (PWG 5100.13)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/standards/std-ipp20-20151030-5100.12.pdf">IPP 2.0, 2.1, and 2.2 (PWG 5100.12)</a></li>
+	<li>IPP 1.1 - <a href="https://tools.ietf.org/html/rfc8010">Encoding and Transport (RFC 8010)</a> - <a href="https://tools.ietf.org/html/rfc8011">Model and Semantics (RFC 8011)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippig20-20150821-5100.19.pdf">IPP Implementor's Guide (PWG 5100.19)</a></li>
+</ul>
+	<p>These are the standards for media naming and the common file formats:</p>
+	<ul>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn20-20130328-5101.1.pdf">Media Names (PWG 5101.1)</a></li>
+	<li><a href="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/pdf/pdfs/PDF32000_2008.pdf">Portable Document Format (ISO 32000-1)</a></li>
+	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf">PWG Raster Format (PWG 5102.4)</a></li>
+</ul>
 	<p>These are the Internet Printing Protocol standards that define how to support specific printer features:</p>
 	<ul>
 	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf">Cloud Printing (PWG 5100.18)</a></li>
-	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf">Extended Options (PWG 5100.13)</a></li>
 	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20140618-5100.15.pdf">Fax Output (PWG 5100.15)</a></li>
 	<li><a href="https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf">Stapling, Folding, Punching, and Other Finishings (PWG 5100.1)</a></li>
 	<li>Notifications - <a href="https://tools.ietf.org/html/rfc3995">Model (RFC 3995)</a> - <a href="https://tools.ietf.org/html/rfc3996">Get-Notifications Operation (RFC 3996)</a></li>

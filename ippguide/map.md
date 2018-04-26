@@ -1,56 +1,135 @@
-Appendix A: Map of IPP Standards
+Appendix A: Quick Reference
 ================================
 
-Core Standards
---------------
+Common Operations
+-----------------
 
-These are the core Internet Printing Protocol standards:
+The following table lists the common IPP operations (all defined in
+[RFC 8011](https://tools.ietf.org/html/rfc8011)) and the commonly-used
+attributes.  Each request always starts with the following three attributes:
 
-- [IPP Everywhere (PWG 5100.14)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippeve10-20130128-5100.14.pdf)
-- [IPP 2.0, 2.1, and 2.2 (PWG 5100.12)](https://ftp.pwg.org/pub/pwg/standards/std-ipp20-20151030-5100.12.pdf)
-- IPP 1.1 - [Encoding and Transport (RFC 8010)](https://tools.ietf.org/html/rfc8010) - [Model and Semantics (RFC 8011)](https://tools.ietf.org/html/rfc8011)
-- [IPP Implementor's Guide (PWG 5100.19)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippig20-20150821-5100.19.pdf)
-- [Media Names (PWG 5101.1)](https://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn20-20130328-5101.1.pdf)
+- "attributes-charset (charset)": Usually "utf-8".
+- "attributes-natural-language (naturalLanguage)": Often just "en", the format
+  is either "ll" or "ll-cc" where "ll" is the two-letter language code and "cc"
+  is the country/region code.
+- "printer-uri (uri)": Usually "ipp://*address*/ipp/print" or
+  "ipps://*address*/ipp/print".
+
+> Note: The syntax uses the standard IPP data types.  Except for Job attributes,
+> all attributes are in the operation group.  The "document-format" attribute
+> is optional but recommended.
+
+| Operation              | Required Attributes (syntax)                  | Optional Attributes (syntax)
+|------------------------|-----------------------------------------------|-----------------------------------------------
+| Create-Job             | requesting-user-name (name), job-name (name)  | [Job Attributes](#common-job-attributes)
+| Get-Job-Attributes     | job-id (integer), requesting-user-name (name) | requested-attributes (1setOf keyword)
+| Get-Jobs               | requesting-user-name (name)                   | my-jobs (boolean), requested-attributes (1setOf keyword), which-jobs (keyword)
+| Get-Printer-Attributes |                                               | document-format (mimeMediaType), requested-attributes (1setOf keyword)
+| Print-Job              | requesting-user-name (name), job-name (name)  | [Job Attributes](#common-job-attributes)
+| Send-Document          | job-id (integer), requesting-user-name (name) | document-format (mimeMediaType), document-name (name)
+
+
+Common Document Formats
+-----------------------
+
+The "document-format" attribute specifies the format of a print file.  The
+following is a list of common formats used for printing:
+
+- "application/pdf": Portable Document Format (PDF) files.
+- "application/vnd.hp-pcl": HP Page Control Language (PCL) files.
+- "image/jpeg": JPEG images.
+- "image/pwg-raster": PWG Raster Format files.
+- "image/urf": Apple Raster files.
+- "text/plain": Plain (ASCII) text with CR LF line endings.
+
+
+Common Job Attributes
+---------------------
+
+The following table lists the common Job attributes that are supported by most
+IPP printers in the Create-Job and Print-Job operations.  You can query the
+corresponding Printer attributes using the Get-Printer-Attributes operation,
+just remember to send a "document-format (mimeMediaType)" attribute to get the
+values for the file format you are using.
+
+> Note: The syntax uses the standard IPP data types.  A "1setOf something" is
+> an array of one or more values.  The "finishings-ready" and "media-ready"
+> Printer attributes should be used when available, otherwise use the
+> "finishings-supported" and "media-supported" attributes.  Similarly, the
+> "finishings-col-ready" and "media-col-ready" Printer attributes should be used
+> when available, otherwise use the "finishings-col-database" and
+> "media-col-database" attributes.
+
+| Job Attribute (syntax)             | Printer Attribute (Syntax)                       | Standard
+|------------------------------------|--------------------------------------------------|------------------------------------------------
+| copies (integer)                   | copies-supported (integer)                       | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| finishings (1setOf enum)           | finishings-ready (1setOf enum)                   | [PWG 5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf)
+| finishings-col (1setOf collection) | finishings-col-ready (1setOf collection)         | [PWG 5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf)
+| media (keyword)                    | media-ready (1setOf keyword)                     | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| media-col (collection)             | media-col-ready (1setOf collection)              | [PWG 5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf)
+| output-bin (keyword)               | output-bin-supported (1setOf keyword)            | [PWG 5100.2](https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf)
+| page-ranges (rangeOfInteger)       | page-ranges-supported (boolean)                  | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| print-color-mode (keyword)         | print-color-mode-supported (1setOf keyword)      | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| print-quality (enum)               | print-quality-supported (1setOf enum)            | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| print-scaling (keyword)            | print-scaling-supported (1setOf keyword)         | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| printer-resolution (resolution)    | printer-resolution-supported (1setOf resolution) | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| sides (keyword)                    | sides-supported (1setOf keyword)                 | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+
+
+Common Printer Attributes
+-------------------------
+
+The following table lists the common Printer attributes that are supported by
+most IPP printers.  You can query them using the Get-Printer-Attributes
+operation.
+
+> Note: The syntax uses the standard IPP data types.  A "1setOf something" is
+> an array of one or more values.
+
+| Printer Attribute (Syntax)                       | Standard
+|--------------------------------------------------|------------------------------------------------
+| document-format-supported (1setOf mimeMediaType)             | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| ipp-features-supported (1setOf keyword)                      | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+| ipp-versions-supported (1setOf keyword)                      | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| operations-supported (1setOf enum)                           | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-info (text)                                          | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-is-accepting-jobs (boolean)                          | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-location (text)                                      | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-make-and-model (text)                                | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-more-info (uri)                                      | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-name (name)                                          | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-state (enum)                                         | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| printer-state-reasons (1setOf keyword)                       | [RFC 8011](https://tools.ietf.org/html/rfc8011)
+| pwg-raster-document-resolution-supported (1setOf resolution) | [PWG 5102.4](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf)
+| pwg-raster-document-sheet-back (keyword)                     | [PWG 5102.4](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf)
+| pwg-raster-document-type-supported (1setOf keyword)          | [PWG 5102.4](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf)
+
+
+Standards
+---------
 
 The [IANA IPP Registry](https://www.iana.org/assignments/ipp-registrations)
 provides a list of all IPP attributes, values, operations, and status codes with
 links to the corresponding standards.
 
+These are the core Internet Printing Protocol standards:
 
-Definitions of Core Job Template Attributes
--------------------------------------------
+- [IPP Everywhere (PWG 5100.14)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippeve10-20130128-5100.14.pdf)
+- [Extended Options (PWG 5100.13)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
+- [IPP 2.0, 2.1, and 2.2 (PWG 5100.12)](https://ftp.pwg.org/pub/pwg/standards/std-ipp20-20151030-5100.12.pdf)
+- IPP 1.1 - [Encoding and Transport (RFC 8010)](https://tools.ietf.org/html/rfc8010) - [Model and Semantics (RFC 8011)](https://tools.ietf.org/html/rfc8011)
+- [IPP Implementor's Guide (PWG 5100.19)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippig20-20150821-5100.19.pdf)
 
-The following table lists the core Job Template attributes that are supported
-by most IPP printers.  You can query the corresponding "xxx-supported"
-attributes using the Get-Printer-Attributes operation.
+These are the standards for media naming and the common file formats:
 
-> Note: The syntax column uses the standard IPP data types.  A "1setOf"
-> something is an array of one or more values.
-
-| Attribute          | Syntax            | Standard
-|--------------------|-------------------|---------------------------------------------------------
-| copies             | integer           | [RFC 8011](https://tools.ietf.org/html/rfc8011)
-| finishings         | 1setOf enum       | [PWG 5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf)
-| finishings-col     | 1setOf collection | [PWG 5100.1](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf)
-| media              | keyword           | [RFC 8011](https://tools.ietf.org/html/rfc8011)
-| media-col          | collection        | [PWG 5100.3](https://ftp.pwg.org/pub/pwg/candidates/cs-ippprodprint10-20010212-5100.3.pdf)
-| output-bin         | keyword           | [PWG 5100.2](https://ftp.pwg.org/pub/pwg/candidates/cs-ippoutputbin10-20010207-5100.2.pdf)
-| page-ranges        | rangeOfInteger    | [RFC 8011](https://tools.ietf.org/html/rfc8011)
-| print-color-mode   | keyword           | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
-| print-quality      | enum              | [RFC 8011](https://tools.ietf.org/html/rfc8011)
-| print-scaling      | keyword           | [PWG 5100.13](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
-| printer-resolution | resolution        | [RFC 8011](https://tools.ietf.org/html/rfc8011)
-| sides              | keyword           | [RFC 8011](https://tools.ietf.org/html/rfc8011)
-
-
-Printer-Specific Features
--------------------------
+- [Media Names (PWG 5101.1)](https://ftp.pwg.org/pub/pwg/candidates/cs-pwgmsn20-20130328-5101.1.pdf)
+- [Portable Document Format (ISO 32000-1)](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/pdf/pdfs/PDF32000_2008.pdf)
+- [PWG Raster Format (PWG 5102.4)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippraster10-20120420-5102.4.pdf)
 
 These are the Internet Printing Protocol standards that define how to support
 specific printer features:
 
 - [Cloud Printing (PWG 5100.18)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippinfra10-20150619-5100.18.pdf)
-- [Extended Options (PWG 5100.13)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippjobprinterext3v10-20120727-5100.13.pdf)
 - [Fax Output (PWG 5100.15)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfaxout10-20140618-5100.15.pdf)
 - [Stapling, Folding, Punching, and Other Finishings (PWG 5100.1)](https://ftp.pwg.org/pub/pwg/candidates/cs-ippfinishings21-20170217-5100.1.pdf)
 - Notifications - [Model (RFC 3995)](https://tools.ietf.org/html/rfc3995) - [Get-Notifications Operation (RFC 3996)](https://tools.ietf.org/html/rfc3996)
