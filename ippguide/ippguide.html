@@ -10,7 +10,7 @@ body {
   font-family: sans-serif;
   font-size: 18px;
   line-height: 1.5em;
-  margin: 20px 40px;
+  margin: 54pt 36pt;
 }
 h1 {
   border-top: solid 2px black;
@@ -32,11 +32,9 @@ a {
 }
 blockquote {
   background: #f8f8f8;
-  border-left: solid thick #666;
-  border-right: solid thick #666;
-  margin-left: 0;
-  margin-right: 0;
-  padding: 10px 40px;
+  border-left: solid 2px #666;
+  margin: 1em 0;
+  padding: .1em 1em;
 }
 pre, li code, p code {
   font-family: monospace;
@@ -52,12 +50,11 @@ li code, p code {
   padding: 2px 5px;
 }
 table {
-  border: solid thin #999;
   border-collapse: collapse;
   border-spacing: 0;
 }
 td {
-  border: solid thin #ccc;
+  border: solid 1px #666;
   padding: 5px 10px;
   vertical-align: top;
 }
@@ -71,12 +68,13 @@ td.right {
   text-align: right;
 }
 th {
-  background: #ccc;
-  border: none;
-  border-bottom: solid thin #999;
+  border-bottom: solid 2px #000;
   padding: 1px 5px;
   text-align: center;
   vertical-align: bottom;
+}
+tr:nth-child(odd) td {
+  background: #f8f8f8;
 }
 
 @page {
@@ -288,7 +286,7 @@ printer.execute(&quot;Print-Job&quot;, msg, function(err, res) {
 	<p>Printers provide attributes that describe the <em>status</em> of the printer (it is printing something, has it run out of paper, etc.), the <em>capabilities</em> of the printer (what paper sizes are supported, can the printer reproduce color, can the printer staple the output, etc.), and <em>general</em> <em>information</em> about the printer (where the printer is located, the URL for the printer's administrative web page, etc.)</p>
 	<p>Printers also manage one or more queued print jobs and provide a history of jobs that have been printed.</p>
 	<h3 id="printer-status-attributes">Printer Status Attributes</h3>
-	<p>Printers provide two main status attributes: &quot;printer-state&quot; and &quot;printer-state-reasons&quot;. The &quot;printer-state&quot; attribute is a number that describes the generate state of the printer:</p>
+	<p>Printers provide two main status attributes: &quot;printer-state&quot; and &quot;printer-state-reasons&quot;. The &quot;printer-state&quot; attribute is a number that describes the general state of the printer:</p>
 	<ul>
 	<li>'3': The printer is idle.</li>
 	<li>'4': The printer is processing a print job.</li>
@@ -400,6 +398,46 @@ printer.execute(&quot;Get-Printer-Attributes&quot;, msg, function(err, res) {
 	<p>IPP printers track the state, capabilities, administrative information, and print jobs of one or more real or virtual printers. IPP printers provide many attributes which are queried using the Get-Printer-Attributes request.</p>
 	<h1 id="chapter-3-print-jobs">Chapter 3: Print Jobs</h1>
 	<h2 id="what-are-print-jobs">What are Print Jobs?</h2>
+	<p>Print jobs in IPP are an abstract object that represents work to be done by a printer - typically printing or faxing a document.</p>
+	<p>Print jobs provide attributes that describe the <em>status</em> of the job (pending, held for some reason, printing, completed, etc.), <em>general</em> <em>information</em> about the job (the job's owner, name, submission time, etc.) the <em>job</em> <em>ticket</em> (print options), and the <em>job</em> <em>receipt</em> (what print options were used, how many pages were printed, when the job was printed, etc.)</p>
+	<p>Print jobs contain zero or more documents that are processed (printed, faxed, etc.) as a single work item, although most printers only support a single document per job so the multiple-document capability of IPP is rarely used.</p>
+	<blockquote>
+	<p>Note: A print job with no documents cannot be processed and will (eventually) be aborted so that other jobs can be processed.</p>
+</blockquote>
+	<h3 id="job-status-attributes">Job Status Attributes</h3>
+	<p>Jobs provide five main status attributes: &quot;job-id&quot;, &quot;job-originating-user-name&quot;, &quot;job-printer-uri&quot;, &quot;job-state&quot;, and &quot;job-state-reasons&quot;. The &quot;job-id&quot; and &quot;job-printer-uri&quot; attributes provide an identifying (integer) number and the printer that will be processing the job. The &quot;job-originating-user-name&quot; attribute provides the name of the submitter, e.g., &quot;Bob Smith&quot;. The &quot;job-originating-user-name&quot; and &quot;job-printer-uri&quot; attributes are provided in the job creation request (Create-Job or Print-Job), while the printer generates a unique &quot;job-id&quot; for each job, starting at 1.</p>
+	<p>The &quot;job-state&quot; attribute is a number that describes the general state of the job:</p>
+	<ul>
+	<li>'3': The job is queued and pending.</li>
+	<li>'4': The job has been held, either because the user asked for it or because a passcode needs to be entered on the printer (&quot;PIN printing&quot;).</li>
+	<li>'5': The job is being processed (printed, faxed, etc.)</li>
+	<li>'6': The job is stopped (out of paper, etc.)</li>
+	<li>'7': The job was canceled by the user.</li>
+	<li>'8': The job was aborted by the printer.</li>
+	<li>'9': The job completed successfully.</li>
+</ul>
+	<p>The &quot;job-state-reasons&quot; attribute is a list of strings that provide details about the job's state:</p>
+	<ul>
+	<li>'none': Everything is super, nothing to report.</li>
+	<li>'document-format-error': The document could not be printed due to a file format error.</li>
+	<li>'document-unprintable-error': The document could not be printed for other reasons (too complex, out of memory, etc.)</li>
+	<li>'job-incoming': The job is being received from the client.</li>
+	<li>'job-password-wait': The printer is waiting for the user to enter the passcode for the job.</li>
+</ul>
+	<blockquote>
+	<p>Note: The <a href="https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4">IANA IPP registry</a> lists all of the registered strings for the &quot;job-state-reasons&quot; attribute.</p>
+</blockquote>
+	<p>Page counts are recorded in the following attributes:</p>
+	<ul>
+	<li>&quot;job-impressions-completed&quot;: The number of sides/images that were printed or sent.</li>
+	<li>&quot;job-media-sheets-completed&quot;: The number of sheets that were printed.</li>
+	<li>&quot;job-pages-completed&quot;: The number of document pages that were processed.</li>
+</ul>
+	<p>Some printers also record a read-only job receipt in attributes named &quot;xxx-actual&quot; for each job ticket attribute, for example &quot;copies-actual&quot;, &quot;media-actual&quot;, and so forth.</p>
+	<h3 id="job-description-attributes">Job Description Attributes</h3>
+	<p>Jobs provide many descriptive attributes, including the job's name (&quot;job-name&quot;), job ticket (&quot;copies&quot;, &quot;media&quot;, etc.), and page counts (&quot;job-impressions&quot;, &quot;job-media-sheets&quot;, and &quot;job-pages&quot;). These attributes are provided in the job creation request (Create-Job or Print-Job)</p>
+	<p>Jobs can be named which is provided in the &quot;job-name&quot; attribute. provide ?? main description attributes: &quot;job-name&quot;, &quot;job-printer-uri&quot;.</p>
+	<p>processing of</p>
 	<ul>
 	<li>Definition</li>
 	<li>Parts of a job object: status + description attributes, document(s)</li>
@@ -485,11 +523,12 @@ printer.execute(&quot;Get-Printer-Attributes&quot;, msg, function(err, res) {
 	<p>The &quot;document-format&quot; attribute specifies the format of a print file. The following is a list of common formats used for printing:</p>
 	<ul>
 	<li>&quot;application/pdf&quot;: Portable Document Format (PDF) files.</li>
-	<li>&quot;application/vnd.hp-pcl&quot;: HP Page Control Language (PCL) files.</li>
+	<li>&quot;application/postscript&quot;: Adobe PostScript files (legacy).</li>
+	<li>&quot;application/vnd.hp-pcl&quot;: HP Page Control Language (PCL) files (legacy).</li>
 	<li>&quot;image/jpeg&quot;: JPEG images.</li>
 	<li>&quot;image/pwg-raster&quot;: PWG Raster Format files.</li>
-	<li>&quot;image/urf&quot;: Apple Raster files.</li>
-	<li>&quot;text/plain&quot;: Plain (ASCII) text with CR LF line endings.</li>
+	<li>&quot;image/urf&quot;: Apple Raster files (AirPrint).</li>
+	<li>&quot;text/plain&quot;: Plain (ASCII) text with CR LF line endings (legacy).</li>
 </ul>
 	<h2 id="common-job-attributes">Common Job Attributes</h2>
 	<p>The following table lists the common Job attributes that are supported by most IPP printers in the Create-Job and Print-Job operations. You can query the corresponding Printer attributes using the Get-Printer-Attributes operation, just remember to send a &quot;document-format (mimeMediaType)&quot; attribute to get the values for the file format you are using.</p>
