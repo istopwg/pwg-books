@@ -24,7 +24,7 @@ that have been printed.
 
 Printers provide two main status attributes: "printer-state" and
 "printer-state-reasons".  The "printer-state" attribute is a number that
-describes the generate state of the printer:
+describes the general state of the printer:
 
 - '3': The printer is idle.
 - '4': The printer is processing a print job.
