@@ -17,7 +17,7 @@ attributes.  Each request always starts with the following three attributes:
 
 > Note: The syntax uses the standard IPP data types.  Except for Job attributes,
 > all attributes are in the operation group.  The "document-format" attribute
-> is optional but recommended.
+> is optional for the Get-Printer-Attributes operation but highly recommended.
 
 | Operation              | Required Attributes (syntax)                  | Optional Attributes (syntax)                                                   |
 |------------------------|-----------------------------------------------|--------------------------------------------------------------------------------|

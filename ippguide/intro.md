@@ -2,7 +2,7 @@
 title: How to Use the Internet Printing Protocol
 author: Michael R Sweet, Peter Zehler
 copyright: Copyright © 2017-2018 by The Printer Working Group
-version: 2018.0426
+version: 2018.0430
 ...
 
 Chapter 1: Introduction
@@ -88,10 +88,23 @@ IPP messages use a common format for both requests (from the client to the
 printer) and responses (from the printer to the client).  Each IPP message
 starts with a version number (2.0 is the most common), an operation (request) or
 status (response) code, a request number, and a list of attributes.  Attributes
-are named and have strongly typed values like integers, keywords, names, and
-URIs.  Attributes are also placed in groups according to their usage -
-the operation group for attributes used for the operation request or response,
-the job group for print job attributes, and so forth.
+are named and have strongly typed values such as:
+
+- "collection": A list of key/value pairs that have been grouped together.
+- "enum": Integer enumerated values, typically starting at 3, where each value
+  has a specific meaning.
+- "integer": 32-bit signed integers from -2147483648 to 2147483647.
+- "keyword": A lowercase string identifier like "one-sided" or
+   "iso\_a4\_210x297mm".
+- "mimeMediaType": A MIME media type like "text/plain" or "application/pdf".
+- "name": A human-readable name like "Bob Smith".
+- "text": A human-readable string like "Printer is out of paper."
+- "uri": A Universal Resource Identifier like "https://www.example.com" or
+  "ipps://printer.example.com/ipp/print".
+
+Attributes are also placed in groups according to their usage - the operation
+group for attributes used for the operation request or response, the job group
+for print job attributes, and so forth.
 
 The first two attributes in an IPP message are always "attributes-charset",
 which defines the character set to use for all name and text strings, and
@@ -123,6 +136,7 @@ format:
     ATTR uri "printer-uri" "ipp://printer.example.com/ipp/print"
     ATTR name "requesting-user-name" "John Doe"
     ATTR mimeMediaType "document-format" "text/plain"
+
     FILE "testfile.txt"
 }
 ```

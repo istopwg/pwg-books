@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>How to Use the Internet Printing Protocol</title>
-    <meta name="version" content="2018.0426">
+    <meta name="version" content="2018.0430">
     <meta name="author" content="Michael R Sweet, Peter Zehler">
     <meta name="copyright" content="Copyright © 2017-2018 by The Printer Working Group">
     <style><!--
@@ -117,7 +117,7 @@ tr:nth-child(odd) td {
   </head>
   <body>
     <h1 class="title">How to Use the Internet Printing Protocol</h1>
-    <p class="title">Version 2018.0426</p>
+    <p class="title">Version 2018.0430</p>
     <p class="title">by Michael R Sweet, Peter Zehler</p>
     <p class="title">Copyright © 2017-2018 by The Printer Working Group</p>
     <h1 class="title">Table of Contents</h1>
@@ -140,7 +140,7 @@ tr:nth-child(odd) td {
         <li class="toc"><a href="#what-are-print-jobs">What are Print Jobs?</a></li>
         <li class="toc"><a href="#documents">Documents</a></li>
         <li class="toc"><a href="#submitting-print-jobs">Submitting Print Jobs</a></li>
-        <li class="toc"><a href="#further-reading">Further Reading</a><ul>
+        <li class="toc"><a href="#summary">Summary</a><ul>
         </ul></li>
       </ul></li>
       <li class="toc"><a href="#appendix-a-quick-reference">Appendix A: Quick Reference</a><ul>
@@ -183,7 +183,18 @@ tr:nth-child(odd) td {
 </blockquote>
 	<p>Print jobs are identified using the printer's URI and a job number that is unique to that printer.</p>
 	<h2 id="ipp-message-encoding">IPP Message Encoding</h2>
-	<p>IPP messages use a common format for both requests (from the client to the printer) and responses (from the printer to the client). Each IPP message starts with a version number (2.0 is the most common), an operation (request) or status (response) code, a request number, and a list of attributes. Attributes are named and have strongly typed values like integers, keywords, names, and URIs. Attributes are also placed in groups according to their usage - the operation group for attributes used for the operation request or response, the job group for print job attributes, and so forth.</p>
+	<p>IPP messages use a common format for both requests (from the client to the printer) and responses (from the printer to the client). Each IPP message starts with a version number (2.0 is the most common), an operation (request) or status (response) code, a request number, and a list of attributes. Attributes are named and have strongly typed values such as:</p>
+	<ul>
+	<li>&quot;collection&quot;: A list of key/value pairs that have been grouped together.</li>
+	<li>&quot;enum&quot;: Integer enumerated values, typically starting at 3, where each value has a specific meaning.</li>
+	<li>&quot;integer&quot;: 32-bit signed integers from -2147483648 to 2147483647.</li>
+	<li>&quot;keyword&quot;: A lowercase string identifier like &quot;one-sided&quot; or &quot;iso_a4_210x297mm&quot;.</li>
+	<li>&quot;mimeMediaType&quot;: A MIME media type like &quot;text/plain&quot; or &quot;application/pdf&quot;.</li>
+	<li>&quot;name&quot;: A human-readable name like &quot;Bob Smith&quot;.</li>
+	<li>&quot;text&quot;: A human-readable string like &quot;Printer is out of paper.&quot;</li>
+	<li>&quot;uri&quot;: A Universal Resource Identifier like &quot;https://www.example.com&quot; or &quot;ipps://printer.example.com/ipp/print&quot;.</li>
+</ul>
+	<p>Attributes are also placed in groups according to their usage - the operation group for attributes used for the operation request or response, the job group for print job attributes, and so forth.</p>
 	<p>The first two attributes in an IPP message are always &quot;attributes-charset&quot;, which defines the character set to use for all name and text strings, and &quot;attributes-natural-language&quot;, which defines the default language (&quot;en&quot; for English, &quot;fr&quot; for French, &quot;ja&quot; for Japanese, etc.) for those strings.</p>
 	<p>The next attributes in a request are the printer's URI (&quot;printer-uri&quot;) and, if the request is targeting a print job, the job's ID number (&quot;job-id&quot;).</p>
 	<p>Most requests include the name of the user that is submitting the request (&quot;requesting-user-name&quot;).</p>
@@ -200,6 +211,7 @@ tr:nth-child(odd) td {
 </code><code>    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
 </code><code>    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
 </code><code>    ATTR mimeMediaType &quot;document-format&quot; &quot;text/plain&quot;
+</code><code>
 </code><code>    FILE &quot;testfile.txt&quot;
 </code><code>}
 </code></pre>
@@ -429,27 +441,220 @@ tr:nth-child(odd) td {
 	<li>&quot;job-media-sheets-completed&quot;: The number of sheets that were printed.</li>
 	<li>&quot;job-pages-completed&quot;: The number of document pages that were processed.</li>
 </ul>
-	<p>Some printers also record a read-only job receipt in attributes named &quot;xxx-actual&quot; for each job ticket attribute, for example &quot;copies-actual&quot;, &quot;media-actual&quot;, and so forth.</p>
+	<p>Some printers also record a read-only job receipt in attributes named &quot;xxx-actual&quot; for each <a href="#job-template-attrbutes">job template</a> attribute, for example &quot;copies-actual&quot;, &quot;media-actual&quot;, and so forth.</p>
 	<h3 id="job-description-attributes">Job Description Attributes</h3>
 	<p>Jobs provide many descriptive attributes, including the job's name (&quot;job-name&quot;) and page counts (&quot;job-impressions&quot;, &quot;job-media-sheets&quot;, and &quot;job-pages&quot;) which are provided in the job creation request (Create-Job or Print-Job).</p>
 	<h3 id="job-template-attributes">Job Template Attributes</h3>
-	<p>The job ticket (&quot;copies&quot;, &quot;media&quot;, etc.),</p>
-	<h2 id="documents">Documents</h2>
+	<p>Job template attributes tell the printer how you want the document(s) printed. Clients can query the <a href="#printer-capability-attributes">printer capability attributes</a> to get the supported values. The following is a list of commonly-supported job template attributes:</p>
 	<ul>
-	<li>Standard formats: PDF, PWG Raster, JPEG</li>
-	<li>Historical formats: PostScript, PCL, other vendor PDLs</li>
-</ul>
-	<h2 id="submitting-print-jobs">Submitting Print Jobs</h2>
-	<ul>
-	<li>Using Create-Job + Send-Document</li>
+	<li>&quot;media&quot;: The desired paper size for the print job using a self-describing name (keyword) value. For example, US Letter paper is 'na_letter_8.5x11in' and ISO A4 paper is 'iso_a4_210x297mm'.</li>
+	<li>&quot;media-col&quot;: The desired paper size and other attributes for the print job using a collection of key/value pairs for size, type, source (tray), and margins.</li>
+	<li>&quot;copies&quot;: The number of copies to produce. This attribute is typically only supported for higher-level formats like PDF and JPEG, so it is important to specify the &quot;document-format&quot; value when you query the printer capabilities.</li>
+	<li>&quot;sides&quot;: A keyword that specifies whether to do two sided printing. Values include 'one-sided', 'two-sided-long-edge' (typical 2-sided printing for portrait documents), and 'two-sided-short-edge' (2-sided printing for landscape documents).</li>
+	<li>&quot;print-quality&quot;: An enumeration specifying the desired print quality. '3' is draft, '4' is normal, and '5' is best quality.</li>
+	<li>&quot;print-color-mode&quot;: A keyword specifying the color printing mode to use. The value 'color' specifies a full-color print, 'monochrome' specifies a grayscale print, and 'bi-level' specifies a black-and-white (no shades of gray) print.</li>
+	<li>&quot;print-scaling&quot;: A keyword specifying how to scale the document for printing. This is typically used only when printing images, but can be used for any format. Values include 'auto' (scale to fit or fill as needed), 'auto-fit' (scale to fit as needed), 'fill' (scale to fill the page), 'fit' (scale to fit the document/image on the page), and 'none' (no scaling).</li>
+	<li>&quot;printer-resolution&quot;: The output resolution to use when printing. The default is usually influenced by the &quot;print-quality&quot; value, but this attribute can be used to force the output resolution to a particular value that is supported by the printer.</li>
+	<li>&quot;page-ranges&quot;: A list of document pages to be printed, for example '1-8' to print pages 1 through 8. This attribute is typically only supported for higher-level formats like PDF so it is important to specify the &quot;document-format&quot; value when you query the printer capabilities.</li>
+	<li>&quot;finishings&quot;: A list of enumerations specifying how the output should be finished, for example '3' for no finishing, '4' to staple, '5' to punch, and '4,5' to staple and punch.</li>
+	<li>&quot;finishings-col&quot;: A list of collections of key/value pairs describing how the output should be finished. Basically an advanced alternative to the &quot;finishings&quot; attribute.</li>
 	<li>When to use media vs. media-col</li>
 	<li>When to use finishings vs. finishings-col</li>
-	<li>ipptool examples</li>
-	<li>CUPS API examples</li>
-	<li>Node.js examples</li>
 </ul>
-	<h2 id="further-reading">Further Reading</h2>
-	<p>Links to additional reading - IIG 2, etc.</p>
+	<h2 id="documents">Documents</h2>
+	<p>Printers report the list of document formats they support in the <a href="#printer-capability-attributes">&quot;document-format&quot; printer capability attribute</a>. Most IPP printers support standard formats like PDF ('application/pdf'), PWG Raster ('image/pwg-raster'), and JPEG (image/jpeg). AirPrint printers also support a simple raster format called Apple Raster ('image/urf').</p>
+	<p>Many IPP printers also support legacy formats such as Adobe PostScript ('application/postscript'), and HP Page Control Language (PCL, 'application/vnd.hp-pcl'), along with a variety of vendor-specific languages.</p>
+	<p>The 'application/octet-stream' document format is used to tell the printer it should automatically detect the format. Detection accuracy varies widely between printers, so you should specify the actual format whenever possible.</p>
+	<h2 id="submitting-print-jobs">Submitting Print Jobs</h2>
+	<p>There are two ways to submit a print job:</p>
+	<ul>
+	<li>Using the Print-Job operation, and</li>
+	<li>Using the Create-Job and Send-Document operations.</li>
+</ul>
+	<h3 id="the-print-job-operation">The Print-Job Operation</h3>
+	<p>The Print-Job operation allows you to create a print job and send the document data in one request. While all IPP printers support this operation, using it means that you cannot reliably cancel the job while it is being submitted, and for many document formats this means that the entire job will be printed before you get the response to the request.</p>
+	<p>The following <code>ipptool</code> test will submit a US Letter print job using the Print-Job operation:</p>
+	   <pre><code>{
+</code><code>    VERSION 2.0
+</code><code>    OPERATION Print-Job
+</code><code>
+</code><code>    GROUP operation-attributes-tag
+</code><code>    ATTR charset &quot;attributes-charset&quot; &quot;utf-8&quot;
+</code><code>    ATTR naturalLanguage &quot;attributes-natural-language&quot; &quot;en&quot;
+</code><code>    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
+</code><code>    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
+</code><code>    ATTR mimeMediaType &quot;document-format&quot; &quot;$filetype&quot;
+</code><code>
+</code><code>    GROUP job-attributes-tag
+</code><code>    ATTR keyword media &quot;na_letter_8.5x11in&quot;
+</code><code>
+</code><code>    FILE $filename
+</code><code>}
+</code></pre>
+	<p>The same request using the CUPS API would look like the following:</p>
+	   <pre><code>#include &lt;cups/cups.h&gt;
+</code><code>
+</code><code>...
+</code><code>
+</code><code>const char *filename;
+</code><code>const char *filetype;
+</code><code>http_t *http;
+</code><code>ipp_t *request;
+</code><code>
+</code><code>http = httpConnect2(&quot;printer.example.com&quot;, 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+</code><code>
+</code><code>request = ippNewRequest(IPP_OP_PRINT_JOB);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, &quot;printer-uri&quot;, NULL, &quot;ipp://printer.example.com/ipp/print&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, &quot;requesting-user-name&quot;, NULL, &quot;John Doe&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, &quot;document-format&quot;, NULL, filetype);
+</code><code>
+</code><code>ippAddString(request, IPP_TAG_JOB, IPP_TAG_KEYWORD, &quot;media&quot;, NULL, &quot;na_letter_8.5x11in&quot;);
+</code><code>
+</code><code>ippDelete(cupsDoFileRequest(http, request, &quot;/ipp/print&quot;, filename));
+</code></pre>
+	<p>And this is how you'd print a job using the nodejs API:</p>
+	   <pre><code>var ipp = require(&quot;ipp&quot;);
+</code><code>var fs = require(&quot;fs&quot;);
+</code><code>var printer = ipp.Printer(&quot;http://printer.example.com:631/ipp/print&quot;);
+</code><code>var filename;
+</code><code>var filetype;
+</code><code>
+</code><code>var filedata = &quot;&quot;;
+</code><code>fs.readFile(filename, function(err,data) {
+</code><code>  filedata = data;
+</code><code>}
+</code><code>
+</code><code>var msg = {
+</code><code>  &quot;operation-attributes-tag&quot;: {
+</code><code>    &quot;requesting-user-name&quot;: &quot;John Doe&quot;,
+</code><code>    &quot;document-format&quot;: filetype
+</code><code>  },
+</code><code>  &quot;job-attributes-tag&quot;: {
+</code><code>    &quot;media&quot;: &quot;na_letter_8.5x11in&quot;
+</code><code>  },
+</code><code>  data: filedata
+</code><code>};
+</code><code>
+</code><code>printer.execute(&quot;Print-Job&quot;, msg, function(err, res) {
+</code><code>        console.log(err);
+</code><code>        console.log(res);
+</code><code>});
+</code></pre>
+	<h3 id="the-create-job-and-send-document-operations">The Create-Job and Send-Document Operations</h3>
+	<p>The Create-Job and Send-Document operations split the job submission into two steps. You first send a Create-Job request with your job template attributes, and the printer will return a &quot;job-id&quot; value to identify the new job you've just created. You then send a Send-Document request with your document data to complete the job submission. If you want to stop the job while sending the document data, you can open a separate connection to the printer and send a Cancel-Job request using the &quot;job-id&quot; value you got from the Create-Job request.</p>
+	<p>The following <code>ipptool</code> test will submit a US Letter print job using the Create-Job and Send-Document operations:</p>
+	   <pre><code>{
+</code><code>    VERSION 2.0
+</code><code>    OPERATION Create-Job
+</code><code>
+</code><code>    GROUP operation-attributes-tag
+</code><code>    ATTR charset &quot;attributes-charset&quot; &quot;utf-8&quot;
+</code><code>    ATTR naturalLanguage &quot;attributes-natural-language&quot; &quot;en&quot;
+</code><code>    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
+</code><code>    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
+</code><code>
+</code><code>    GROUP job-attributes-tag
+</code><code>    ATTR keyword media &quot;na_letter_8.5x11in&quot;
+</code><code>
+</code><code>    EXPECT job-id OF-TYPE integer
+</code><code>}
+</code><code>
+</code><code>{
+</code><code>    VERSION 2.0
+</code><code>    OPERATION Send-Document
+</code><code>
+</code><code>    GROUP operation-attributes-tag
+</code><code>    ATTR charset &quot;attributes-charset&quot; &quot;utf-8&quot;
+</code><code>    ATTR naturalLanguage &quot;attributes-natural-language&quot; &quot;en&quot;
+</code><code>    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
+</code><code>    ATTR integer &quot;job-id&quot; $job-id
+</code><code>    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
+</code><code>    ATTR mimeMediaType &quot;document-format&quot; &quot;$filetype&quot;
+</code><code>    ATTR boolean &quot;last-document&quot; true
+</code><code>
+</code><code>    FILE $filename
+</code><code>}
+</code></pre>
+	<p>The same request using the CUPS API would look like the following:</p>
+	   <pre><code>#include &lt;cups/cups.h&gt;
+</code><code>
+</code><code>...
+</code><code>
+</code><code>const char *filename;
+</code><code>const char *filetype;
+</code><code>http_t *http;
+</code><code>ipp_t *request, *response;
+</code><code>
+</code><code>http = httpConnect2(&quot;printer.example.com&quot;, 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+</code><code>
+</code><code>request = ippNewRequest(IPP_OP_CREATE_JOB);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, &quot;printer-uri&quot;, NULL, &quot;ipp://printer.example.com/ipp/print&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, &quot;requesting-user-name&quot;, NULL, &quot;John Doe&quot;);
+</code><code>
+</code><code>ippAddString(request, IPP_TAG_JOB, IPP_TAG_KEYWORD, &quot;media&quot;, NULL, &quot;na_letter_8.5x11in&quot;);
+</code><code>
+</code><code>response = cupsDoFileRequest(http, request, &quot;/ipp/print&quot;, filename);
+</code><code>
+</code><code>int job_id = ippGetInteger(ippFindAttribute(response, &quot;job-id&quot;, IPP_TAG_INTEGER), 0);
+</code><code>
+</code><code>ippDelete(response);
+</code><code>
+</code><code>request = ippNewRequest(IPP_OP_SEND_DOCUMENT);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, &quot;printer-uri&quot;, NULL, &quot;ipp://printer.example.com/ipp/print&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_INTEGER, &quot;job-id&quot;, job_id);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, &quot;requesting-user-name&quot;, NULL, &quot;John Doe&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, &quot;document-format&quot;, NULL, filetype);
+</code><code>
+</code><code>ippDelete(cupsDoFileRequest(http, request, &quot;/ipp/print&quot;, filename));
+</code><code>
+</code></pre>
+	<p>And this is how you'd print a job using the nodejs API:</p>
+	   <pre><code>var ipp = require(&quot;ipp&quot;);
+</code><code>var fs = require(&quot;fs&quot;);
+</code><code>var printer = ipp.Printer(&quot;http://printer.example.com:631/ipp/print&quot;);
+</code><code>var filename;
+</code><code>var filetype;
+</code><code>
+</code><code>var filedata = &quot;&quot;;
+</code><code>fs.readFile(filename, function(err,data) {
+</code><code>  filedata = data;
+</code><code>}
+</code><code>
+</code><code>var create_msg = {
+</code><code>  &quot;operation-attributes-tag&quot;: {
+</code><code>    &quot;requesting-user-name&quot;: &quot;John Doe&quot;
+</code><code>  },
+</code><code>  &quot;job-attributes-tag&quot;: {
+</code><code>    &quot;media&quot;: &quot;na_letter_8.5x11in&quot;
+</code><code>  }
+</code><code>};
+</code><code>
+</code><code>var job_id = 0;
+</code><code>
+</code><code>printer.execute(&quot;Create-Job&quot;, msg, function(err, res) {
+</code><code>        console.log(err);
+</code><code>        console.log(res);
+</code><code>
+</code><code>	job_id = res[&quot;job-id&quot;];
+</code><code>});
+</code><code>
+</code><code>var send_msg = {
+</code><code>  &quot;operation-attributes-tag&quot;: {
+</code><code>    &quot;job-id&quot;: job_id,
+</code><code>    &quot;requesting-user-name&quot;: &quot;John Doe&quot;,
+</code><code>    &quot;document-format&quot;: filetype
+</code><code>  },
+</code><code>  data: filedata
+</code><code>};
+</code><code>
+</code><code>printer.execute(&quot;Send-Document&quot;, msg, function(err, res) {
+</code><code>        console.log(err);
+</code><code>        console.log(res);
+</code><code>});
+</code><code>
+</code></pre>
+	<h2 id="summary">Summary</h2>
+	<p>IPP print jobs track the state and options of an individual document that has been submitted for printing. IPP supports a wide range of printing options using job template attributes. IPP provides two ways to submit print jobs.</p>
 	<h1 id="appendix-a-quick-reference">Appendix A: Quick Reference</h1>
 	<h2 id="common-operations">Common Operations</h2>
 	<p>The following table lists the common IPP operations (all defined in <a href="https://tools.ietf.org/html/rfc8011">RFC 8011</a>) and the commonly-used attributes. Each request always starts with the following three attributes:</p>
@@ -459,7 +664,7 @@ tr:nth-child(odd) td {
 	<li>&quot;printer-uri (uri)&quot;: Usually &quot;ipp://<em>address</em>/ipp/print&quot; or &quot;ipps://<em>address</em>/ipp/print&quot;.</li>
 </ul>
 	<blockquote>
-	<p>Note: The syntax uses the standard IPP data types. Except for Job attributes, all attributes are in the operation group. The &quot;document-format&quot; attribute is optional but recommended.</p>
+	<p>Note: The syntax uses the standard IPP data types. Except for Job attributes, all attributes are in the operation group. The &quot;document-format&quot; attribute is optional for the Get-Printer-Attributes operation but highly recommended.</p>
 </blockquote>
 	<table>	<thead>	<tr>	<th> Operation</th>
 	<th> Required Attributes (syntax)</th>
