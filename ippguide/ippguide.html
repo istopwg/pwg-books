@@ -34,18 +34,25 @@ blockquote {
   background: #f8f8f8;
   border-left: solid 2px #666;
   margin: 1em 0;
-  padding: .1em 1em;
+  padding: 10px 20px;
 }
 pre, li code, p code {
   font-family: monospace;
 }
 pre {
   background: #f8f8f8;
-  border: solid thin #666;
+  border-left: solid 2px #666;
   font-size: 14px;
   line-height: 120%;
-  padding: 10px;
+  padding: 10px 20px;
+  white-space: pre-wrap;
 }
+pre code {
+  display: block;
+  margin-left: 3em;
+  text-indent: -3em;
+}
+
 li code, p code {
   padding: 2px 5px;
 }
@@ -104,7 +111,6 @@ tr:nth-child(odd) td {
   }
   pre {
     page-break-inside: avoid;
-    white-space: pre-wrap;
   }
 }
 --></style>
@@ -132,9 +138,6 @@ tr:nth-child(odd) td {
       </ul></li>
       <li class="toc"><a href="#chapter-3-print-jobs">Chapter 3: Print Jobs</a><ul>
         <li class="toc"><a href="#what-are-print-jobs">What are Print Jobs?</a></li>
-        <li class="toc"><a href="#job-description-attributes">Job Description Attributes</a></li>
-        <li class="toc"><a href="#job-status-attributes">Job Status Attributes</a></li>
-        <li class="toc"><a href="#job-template-attributes">Job Template Attributes</a></li>
         <li class="toc"><a href="#documents">Documents</a></li>
         <li class="toc"><a href="#submitting-print-jobs">Submitting Print Jobs</a></li>
         <li class="toc"><a href="#further-reading">Further Reading</a><ul>
@@ -167,13 +170,13 @@ tr:nth-child(odd) td {
 </blockquote>
 	<p>Printers are identified using Universal Resource Identifiers (&quot;URIs&quot;) with the &quot;ipp&quot; or &quot;ipps&quot; scheme, for example:</p>
 	   <pre><code>ipp://printer.example.com/ipp/print
-ipps://printer2.example.com:443/ipp/print
-ipps://server.example.com/ipp/print/printer3
+</code><code>ipps://printer2.example.com:443/ipp/print
+</code><code>ipps://server.example.com/ipp/print/printer3
 </code></pre>
 	<p>These are mapped to &quot;http&quot; and &quot;https&quot; URLs, with a default port number of 631 for IPP. For example, the previous IPP URIs would be mapped to:</p>
 	   <pre><code>http://printer.example.com:631/ipp/print
-https://printer2.example.com/ipp/print
-https://server.example.com:631/ipp/print/printer3
+</code><code>https://printer2.example.com/ipp/print
+</code><code>https://server.example.com:631/ipp/print/printer3
 </code></pre>
 	<blockquote>
 	<p>The resource path &quot;/ipp/print&quot; is commonly used by IPP printers, however there is no hard requirement to follow that convention and older IPP printers used a variety of different locations. Consult your printer documentation or the printer's Bonjour registration information to determine the proper hostname, port number, and path to use for your printer.</p>
@@ -187,79 +190,75 @@ https://server.example.com:631/ipp/print/printer3
 	<p>A request containing an attached print file includes the MIME media type for the file (&quot;document-format&quot;). The media type is 'text/plain' for text files, 'image/jpeg' for JPEG files, 'application/pdf' for PDF files, etc.</p>
 	<p>The following example encodes a Print-Job request using the <code>ipptool</code> test file format:</p>
 	   <pre><code>{
-    VERSION 2.0
-    OPERATION Print-Job
-    REQUEST-ID 42
-
-    GROUP operation-attributes-tag
-    ATTR charset &quot;attributes-charset&quot; &quot;utf-8&quot;
-    ATTR naturalLanguage &quot;attributes-natural-language&quot; &quot;en&quot;
-    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
-    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
-    ATTR mimeMediaType &quot;document-format&quot; &quot;text/plain&quot;
-    FILE &quot;testfile.txt&quot;
-}
+</code><code>    VERSION 2.0
+</code><code>    OPERATION Print-Job
+</code><code>    REQUEST-ID 42
+</code><code>
+</code><code>    GROUP operation-attributes-tag
+</code><code>    ATTR charset &quot;attributes-charset&quot; &quot;utf-8&quot;
+</code><code>    ATTR naturalLanguage &quot;attributes-natural-language&quot; &quot;en&quot;
+</code><code>    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
+</code><code>    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
+</code><code>    ATTR mimeMediaType &quot;document-format&quot; &quot;text/plain&quot;
+</code><code>    FILE &quot;testfile.txt&quot;
+</code><code>}
 </code></pre>
 	<p>The same request using the CUPS API would look like the following:</p>
 	   <pre><code>#include &lt;cups/cups.h&gt;
-
-...
-
-http_t *http;
-ipp_t *request, *response;
-
-http = httpConnect2(&quot;printer.example.com&quot;, 631, NULL, AF_UNSPEC,
-                    HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
-
-request = ippNewRequest(IPP_OP_PRINT_JOB);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, &quot;printer-uri&quot;, NULL,
-             &quot;ipp://printer.example.com/ipp/print&quot;);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, &quot;requesting-user-name&quot;,
-             NULL, &quot;John Doe&quot;);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, &quot;document-format&quot;,
-             NULL, &quot;text/plain&quot;);
-
-response = cupsDoFileRequest(http, request, &quot;/ipp/print&quot;, &quot;testfile.txt&quot;);
-
-ipp_attribute_t *attr;
-const char *name;
-char value[2048];
-
-for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response))
-{
-  name = ippGetName(attr);
-
-  if (name)
-  {
-    ippAttributeString(attr, name, sizeof(name));
-    printf(&quot;%s=%s\n&quot;, name, value);
-  }
-}
+</code><code>
+</code><code>...
+</code><code>
+</code><code>http_t *http;
+</code><code>ipp_t *request, *response;
+</code><code>
+</code><code>http = httpConnect2(&quot;printer.example.com&quot;, 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+</code><code>
+</code><code>request = ippNewRequest(IPP_OP_PRINT_JOB);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, &quot;printer-uri&quot;, NULL, &quot;ipp://printer.example.com/ipp/print&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, &quot;requesting-user-name&quot;, NULL, &quot;John Doe&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, &quot;document-format&quot;, NULL, &quot;text/plain&quot;);
+</code><code>
+</code><code>response = cupsDoFileRequest(http, request, &quot;/ipp/print&quot;, &quot;testfile.txt&quot;);
+</code><code>
+</code><code>ipp_attribute_t *attr;
+</code><code>const char *name;
+</code><code>char value[2048];
+</code><code>
+</code><code>for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response))
+</code><code>{
+</code><code>  name = ippGetName(attr);
+</code><code>
+</code><code>  if (name)
+</code><code>  {
+</code><code>    ippAttributeString(attr, name, sizeof(name));
+</code><code>    printf(&quot;%s=%s\n&quot;, name, value);
+</code><code>  }
+</code><code>}
 </code></pre>
 	<p>And this is how you'd send a Print-Job request using the nodejs API:</p>
 	   <pre><code>var ipp = require(&quot;ipp&quot;);
-var printer = ipp.Printer(&quot;http://printer.example.com:631/ipp/print&quot;);
-var fs = require(&quot;fs&quot;);
-var document;
-
-fs.readFile(&quot;testfile.txt&quot;, function(err, data) {
-  if (err) throw err;
-
-  document = data;
-});
-
-var msg = {
-  &quot;operation-attributes-tag&quot;: {
-    &quot;requesting-user-name&quot;: &quot;John Doe&quot;,
-    &quot;document-format&quot;: &quot;text/plain&quot;
-  },
-  data: document;
-};
-
-printer.execute(&quot;Print-Job&quot;, msg, function(err, res) {
-        console.log(err);
-        console.log(res);
-});
+</code><code>var printer = ipp.Printer(&quot;http://printer.example.com:631/ipp/print&quot;);
+</code><code>var fs = require(&quot;fs&quot;);
+</code><code>var document;
+</code><code>
+</code><code>fs.readFile(&quot;testfile.txt&quot;, function(err, data) {
+</code><code>  if (err) throw err;
+</code><code>
+</code><code>  document = data;
+</code><code>});
+</code><code>
+</code><code>var msg = {
+</code><code>  &quot;operation-attributes-tag&quot;: {
+</code><code>    &quot;requesting-user-name&quot;: &quot;John Doe&quot;,
+</code><code>    &quot;document-format&quot;: &quot;text/plain&quot;
+</code><code>  },
+</code><code>  data: document;
+</code><code>};
+</code><code>
+</code><code>printer.execute(&quot;Print-Job&quot;, msg, function(err, res) {
+</code><code>        console.log(err);
+</code><code>        console.log(res);
+</code><code>});
 </code></pre>
 	<p>The response message uses the same version number, request number, character set, and natural language values as the request. A status code replaces the operation code in the initial message header - for the Print-Job operation the printer will return the 'successful-ok' status code if the print request is successful or 'server-error-printer-busy' if the printer is busy and wants you to try again at a later time.</p>
 	<p>The character set and natural language values in the response are followed by operation-specific attributes. For example, the Print-Job operation returns the print job identifier (&quot;job-id&quot;) and state (&quot;job-state&quot; and &quot;job-state-reasons&quot;) attributes.</p>
@@ -335,64 +334,61 @@ printer.execute(&quot;Print-Job&quot;, msg, function(err, res) {
 	<h2 id="querying-the-printer-attributes">Querying the Printer Attributes</h2>
 	<p>The Get-Printer-Attributes operation is used to query any of the printer attributes mentioned previously. The following <code>ipptool</code> test will report the current printer attribute values:</p>
 	   <pre><code>{
-    VERSION 2.0
-    OPERATION Get-Printer-Attributes
-
-    GROUP operation-attributes-tag
-    ATTR charset &quot;attributes-charset&quot; &quot;utf-8&quot;
-    ATTR naturalLanguage &quot;attributes-natural-language&quot; &quot;en&quot;
-    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
-    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
-}
+</code><code>    VERSION 2.0
+</code><code>    OPERATION Get-Printer-Attributes
+</code><code>
+</code><code>    GROUP operation-attributes-tag
+</code><code>    ATTR charset &quot;attributes-charset&quot; &quot;utf-8&quot;
+</code><code>    ATTR naturalLanguage &quot;attributes-natural-language&quot; &quot;en&quot;
+</code><code>    ATTR uri &quot;printer-uri&quot; &quot;ipp://printer.example.com/ipp/print&quot;
+</code><code>    ATTR name &quot;requesting-user-name&quot; &quot;John Doe&quot;
+</code><code>}
 </code></pre>
 	<p>The same request using the CUPS API would look like the following:</p>
 	   <pre><code>#include &lt;cups/cups.h&gt;
-
-...
-
-http_t *http;
-ipp_t *request, *response;
-
-http = httpConnect2(&quot;printer.example.com&quot;, 631, NULL, AF_UNSPEC,
-                    HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
-
-request = ippNewRequest(IPP_OP_GET_PRINTER_ATTRIBUTES);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, &quot;printer-uri&quot;, NULL,
-             &quot;ipp://printer.example.com/ipp/print&quot;);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, &quot;requesting-user-name&quot;,
-             NULL, &quot;John Doe&quot;);
-
-response = cupsDoRequest(http, request, &quot;/ipp/print&quot;);
-
-ipp_attribute_t *attr;
-const char *name;
-char value[2048];
-
-for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response))
-{
-  name = ippGetName(attr);
-
-  if (name)
-  {
-    ippAttributeString(attr, name, sizeof(name));
-    printf(&quot;%s=%s\n&quot;, name, value);
-  }
-}
+</code><code>
+</code><code>...
+</code><code>
+</code><code>http_t *http;
+</code><code>ipp_t *request, *response;
+</code><code>
+</code><code>http = httpConnect2(&quot;printer.example.com&quot;, 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+</code><code>
+</code><code>request = ippNewRequest(IPP_OP_GET_PRINTER_ATTRIBUTES);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, &quot;printer-uri&quot;, NULL, &quot;ipp://printer.example.com/ipp/print&quot;);
+</code><code>ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, &quot;requesting-user-name&quot;, NULL, &quot;John Doe&quot;);
+</code><code>
+</code><code>response = cupsDoRequest(http, request, &quot;/ipp/print&quot;);
+</code><code>
+</code><code>ipp_attribute_t *attr;
+</code><code>const char *name;
+</code><code>char value[2048];
+</code><code>
+</code><code>for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response))
+</code><code>{
+</code><code>  name = ippGetName(attr);
+</code><code>
+</code><code>  if (name)
+</code><code>  {
+</code><code>    ippAttributeString(attr, name, sizeof(name));
+</code><code>    printf(&quot;%s=%s\n&quot;, name, value);
+</code><code>  }
+</code><code>}
 </code></pre>
 	<p>And this is how you'd query a printer using the nodejs API:</p>
 	   <pre><code>var ipp = require(&quot;ipp&quot;);
-var printer = ipp.Printer(&quot;http://printer.example.com:631/ipp/print&quot;);
-
-var msg = {
-  &quot;operation-attributes-tag&quot;: {
-    &quot;requesting-user-name&quot;: &quot;John Doe&quot;,
-  }
-};
-
-printer.execute(&quot;Get-Printer-Attributes&quot;, msg, function(err, res) {
-        console.log(err);
-        console.log(res);
-});
+</code><code>var printer = ipp.Printer(&quot;http://printer.example.com:631/ipp/print&quot;);
+</code><code>
+</code><code>var msg = {
+</code><code>  &quot;operation-attributes-tag&quot;: {
+</code><code>    &quot;requesting-user-name&quot;: &quot;John Doe&quot;,
+</code><code>  }
+</code><code>};
+</code><code>
+</code><code>printer.execute(&quot;Get-Printer-Attributes&quot;, msg, function(err, res) {
+</code><code>        console.log(err);
+</code><code>        console.log(res);
+</code><code>});
 </code></pre>
 	<h2 id="summary">Summary</h2>
 	<p>IPP printers track the state, capabilities, administrative information, and print jobs of one or more real or virtual printers. IPP printers provide many attributes which are queried using the Get-Printer-Attributes request.</p>
@@ -435,28 +431,9 @@ printer.execute(&quot;Get-Printer-Attributes&quot;, msg, function(err, res) {
 </ul>
 	<p>Some printers also record a read-only job receipt in attributes named &quot;xxx-actual&quot; for each job ticket attribute, for example &quot;copies-actual&quot;, &quot;media-actual&quot;, and so forth.</p>
 	<h3 id="job-description-attributes">Job Description Attributes</h3>
-	<p>Jobs provide many descriptive attributes, including the job's name (&quot;job-name&quot;), job ticket (&quot;copies&quot;, &quot;media&quot;, etc.), and page counts (&quot;job-impressions&quot;, &quot;job-media-sheets&quot;, and &quot;job-pages&quot;). These attributes are provided in the job creation request (Create-Job or Print-Job)</p>
-	<p>Jobs can be named which is provided in the &quot;job-name&quot; attribute. provide ?? main description attributes: &quot;job-name&quot;, &quot;job-printer-uri&quot;.</p>
-	<p>processing of</p>
-	<ul>
-	<li>Definition</li>
-	<li>Parts of a job object: status + description attributes, document(s)</li>
-	<li>Job ticket (intent for printing): Job Template attributes in Job Creation request.</li>
-</ul>
-	<h2 id="job-description-attributes">Job Description Attributes</h2>
-	<ul>
-	<li>Important attributes: job-name, others?</li>
-</ul>
-	<h2 id="job-status-attributes">Job Status Attributes</h2>
-	<ul>
-	<li>Important attributes: job-id, job-impressions[-completed],
--completed, job-pages[-completed], job-originating-user-name, job-state, job-state-reasons
--completed, job-originating-user-name, job-state, job-state-reasons</li>
-</ul>
-	<h2 id="job-template-attributes">Job Template Attributes</h2>
-	<ul>
-	<li>Important attributes: copies, finishings/finishings-col, media/media-col, page-ranges, print-color-mode, print-quality, print-scaling, printer-resolution, sides</li>
-</ul>
+	<p>Jobs provide many descriptive attributes, including the job's name (&quot;job-name&quot;) and page counts (&quot;job-impressions&quot;, &quot;job-media-sheets&quot;, and &quot;job-pages&quot;) which are provided in the job creation request (Create-Job or Print-Job).</p>
+	<h3 id="job-template-attributes">Job Template Attributes</h3>
+	<p>The job ticket (&quot;copies&quot;, &quot;media&quot;, etc.),</p>
 	<h2 id="documents">Documents</h2>
 	<ul>
 	<li>Standard formats: PDF, PWG Raster, JPEG</li>

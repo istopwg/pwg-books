@@ -26,18 +26,25 @@ blockquote {
   background: #f8f8f8;
   border-left: solid 2px #666;
   margin: 1em 0;
-  padding: .1em 1em;
+  padding: 10px 20px;
 }
 pre, li code, p code {
   font-family: monospace;
 }
 pre {
   background: #f8f8f8;
-  border: solid thin #666;
+  border-left: solid 2px #666;
   font-size: 14px;
   line-height: 120%;
-  padding: 10px;
+  padding: 10px 20px;
+  white-space: pre-wrap;
 }
+pre code {
+  display: block;
+  margin-left: 3em;
+  text-indent: -3em;
+}
+
 li code, p code {
   padding: 2px 5px;
 }
@@ -96,6 +103,5 @@ tr:nth-child(odd) td {
   }
   pre {
     page-break-inside: avoid;
-    white-space: pre-wrap;
   }
 }

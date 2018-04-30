@@ -73,44 +73,14 @@ Some printers also record a read-only job receipt in attributes named
 
 ### Job Description Attributes
 
-Jobs provide many descriptive attributes, including the job's name ("job-name"),
-job ticket ("copies", "media", etc.), and page counts ("job-impressions",
-"job-media-sheets", and "job-pages").  These attributes are provided in the
-job creation request (Create-Job or Print-Job)
-
-Jobs can be named which is provided in the "job-name" attribute.
-provide ?? main description attributes: "job-name", "job-printer-uri".
+Jobs provide many descriptive attributes, including the job's name ("job-name")
+and page counts ("job-impressions", "job-media-sheets", and "job-pages") which
+are provided in the job creation request (Create-Job or Print-Job).
 
 
-processing of
-- Definition
+### Job Template Attributes
 
-- Parts of a job object: status + description attributes, document(s)
-
-- Job ticket (intent for printing): Job Template attributes in Job Creation
-  request.
-
-
-Job Description Attributes
---------------------------
-
-- Important attributes: job-name, others?
-
-
-Job Status Attributes
----------------------
-
-- Important attributes: job-id, job-impressions[-completed],
-  job-pages[-completed], job-originating-user-name, job-state, job-state-reasons
-
-
-Job Template Attributes
------------------------
-
-- Important attributes: copies, finishings/finishings-col, media/media-col,
-  page-ranges, print-color-mode, print-quality, print-scaling,
-  printer-resolution, sides
-
+The job ticket ("copies", "media", etc.),
 
 Documents
 ---------
