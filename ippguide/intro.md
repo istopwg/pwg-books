@@ -170,7 +170,7 @@ for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response)
 
   if (name)
   {
-    ippAttributeString(attr, name, sizeof(name));
+    ippAttributeString(attr, value, sizeof(value));
     printf("%s=%s\n", name, value);
   }
 }
