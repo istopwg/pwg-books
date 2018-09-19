@@ -1,6 +1,24 @@
 Appendix A: Quick Reference
 ================================
 
+Tools and Libraries
+-------------------
+
+Network debugging tools:
+
+- [Wireshark](https://wireshark.org)
+
+Libraries and sample code:
+
+- C-based: [CUPS](https://www.cups.org/) and
+  [PWG IPP Sample Code](https://istopwg.github.io/ippsample)
+- Java: [Java IPP Client Implementation](https://code.google.com/archive/p/jspi/)
+  and
+  [Core parser for a Java implementation of IPP](https://github.com/HPInc/jipp)
+- [Javascript IPP Client Implementation](https://github.com/williamkapke/ipp)
+- [Python IPP Client Implementation](http://www.pykota.com/software/pkipplib/)
+
+
 Common Operations
 -----------------
 

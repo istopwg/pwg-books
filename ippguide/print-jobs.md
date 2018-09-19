@@ -5,40 +5,22 @@ Chapter 3: Print Jobs
 What are Print Jobs?
 --------------------
 
-Print jobs in IPP are an abstract object that represents work to be done by a
-printer - typically printing or faxing a document.
-
+Print jobs in IPP are objects that represent work to be done by a printer.
 Print jobs provide attributes that describe the *status* of the job (pending,
 held for some reason, printing, completed, etc.), *general information* about
 the job (the job's owner, name, submission time, etc.) the *job ticket* (print
 options), and the *job receipt* (what print options were used, how many pages
 were printed, when the job was printed, etc.)
 
-Print jobs contain zero or more documents that are processed (printed, faxed,
-etc.) as a single work item, although most printers only support a single
-document per job so the multiple-document capability of IPP is rarely used.
-
-> Note: A print job with no documents cannot be processed and will (eventually)
-> be aborted so that other jobs can be processed.
-
 
 ### Job Status Attributes
 
-Jobs provide five main status attributes: "job-id", "job-originating-user-name",
-"job-printer-uri", "job-state", and "job-state-reasons".  The "job-id" and
-"job-printer-uri" attributes provide an identifying (integer) number and the
-printer that will be processing the job.  The "job-originating-user-name"
-attribute provides the name of the submitter, e.g., "Bob Smith".  The
-"job-originating-user-name" and "job-printer-uri" attributes are provided in
-the job creation request (Create-Job or Print-Job), while the printer generates
-a unique "job-id" for each job, starting at 1.
-
-The "job-state" attribute is a number that describes the general state of the
-job:
+Job objects provide two main status attributes: "job-state" and
+"job-state-reasons".  The "job-state" attribute is a number that describes the
+general state of the job:
 
 - '3': The job is queued and pending.
-- '4': The job has been held, either because the user asked for it or because
-  a passcode needs to be entered on the printer ("PIN printing").
+- '4': The job has been held, e.g., for "PIN printing".
 - '5': The job is being processed (printed, faxed, etc.)
 - '6': The job is stopped (out of paper, etc.)
 - '7': The job was canceled by the user.
@@ -54,7 +36,7 @@ about the job's state:
 - 'document-unprintable-error': The document could not be printed for other
   reasons (too complex, out of memory, etc.)
 - 'job-incoming': The job is being received from the client.
-- 'job-password-wait': The printer is waiting for the user to enter the passcode
+- 'job-password-wait': The printer is waiting for the user to enter the PIN
   for the job.
 
 > Note: The [IANA IPP registry](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4)
@@ -67,24 +49,22 @@ Page counts are recorded in the following attributes:
 - "job-media-sheets-completed": The number of sheets that were printed.
 - "job-pages-completed": The number of document pages that were processed.
 
-Some printers also record a read-only job receipt in attributes named
-"xxx-actual" for each [job template](#job-template-attrbutes) attribute, for
-example "copies-actual", "media-actual", and so forth.
+
+### Job Information Attributes
+
+Job objects provide many informational attributes, including the job's name
+("job-name"), number ("job-id"), owner ("job-originating-user-name"),
+printer ("job-printer-uri"), and page counts ("job-impressions",
+"job-media-sheets", and "job-pages") which are provided or generated in the job
+creation request (Create-Job or Print-Job).
 
 
-### Job Description Attributes
+### Job Ticket Attributes
 
-Jobs provide many descriptive attributes, including the job's name ("job-name")
-and page counts ("job-impressions", "job-media-sheets", and "job-pages") which
-are provided in the job creation request (Create-Job or Print-Job).
-
-
-### Job Template Attributes
-
-Job template attributes tell the printer how you want the document(s) printed.
+Job ticket attributes tell the printer how you want the document(s) printed.
 Clients can query the [printer capability attributes](#printer-capability-attributes)
-to get the supported values. The following is a list of commonly-supported job
-template attributes:
+to get the supported values. The following is a list of commonly-supported
+attributes:
 
 - "media": The desired paper size for the print job using a self-describing
   name (keyword) value.  For example, US Letter paper is 'na\_letter\_8.5x11in'
@@ -135,18 +115,20 @@ template attributes:
   "finishings" attribute.
 
 
-- When to use media vs. media-col
+### Job Receipt Attributes
 
-- When to use finishings vs. finishings-col
+Some printers also record a read-only job receipt in attributes named
+"xxx-actual" for each [job template](#job-template-attrbutes) attribute, for
+example "copies-actual", "media-actual", and so forth.
 
 
 Documents
 ---------
 
-Printers report the list of document formats they support in the
-["document-format" printer capability attribute](#printer-capability-attributes).
+Printers report the document formats they support in the
+["document-format-supported" printer capability attribute](#printer-capability-attributes).
 Most IPP printers support standard formats like PDF ('application/pdf'), PWG
-Raster ('image/pwg-raster'), and JPEG (image/jpeg). AirPrint printers also
+Raster ('image/pwg-raster'), and JPEG (image/jpeg).  AirPrint printers also
 support a simple raster format called Apple Raster ('image/urf').
 
 Many IPP printers also support legacy formats such as Adobe PostScript
@@ -154,8 +136,8 @@ Many IPP printers also support legacy formats such as Adobe PostScript
 'application/vnd.hp-pcl'), along with a variety of vendor-specific languages.
 
 The 'application/octet-stream' document format is used to tell the printer it
-should automatically detect the format. Detection accuracy varies widely between
-printers, so you should specify the actual format whenever possible.
+should automatically detect the format.  Detection accuracy varies widely
+between printers, so you should specify the actual format whenever possible.
 
 
 Submitting Print Jobs
@@ -383,11 +365,3 @@ printer.execute("Send-Document", msg, function(err, res) {
 });
 
 ```
-
-
-Summary
--------
-
-IPP print jobs track the state and options of an individual document that has
-been submitted for printing. IPP supports a wide range of printing options using
-job template attributes. IPP provides two ways to submit print jobs.
