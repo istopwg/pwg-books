@@ -1,44 +1,10 @@
----
-title: How to Use the Internet Printing Protocol
-author: Michael R Sweet, Peter Zehler
-copyright: Copyright © 2017-2018 by The Printer Working Group
-version: v2018.0918
-...
-
-Chapter 1: Introduction
-=======================
-
-
-What is IPP?
-------------
-
-The Internet Printing Protocol ("IPP") is a secure application level protocol
-used for network printing.  The protocol allows a Client to ask a Printer about
-its capabilities and defaults (supported media sizes, two-sided printing, etc.),
-and the state of the Printer (paper out/jam, low ink/toner, etc.) and any Print
-Jobs.  The Client can also submit files for printing and subsequently cancel
-them.  IPP is supported by all modern network printers and supercedes all legacy
-network protocols including port 9100 printing and LPD/lpr.
-
-IPP is widely implemented in software as well, including the following open
-source projects:
-
-- C-based: [CUPS](https://www.cups.org/) and
-  [PWG IPP Sample Code](https://istopwg.github.io/ippsample)
-- Java: [Java IPP Client Implementation](https://code.google.com/archive/p/jspi/)
-  and
-  [Core parser for a Java implementation of IPP](https://github.com/HPInc/jipp)
-- [Javascript IPP Client Implementation](https://github.com/williamkapke/ipp)
-- [Python IPP Client Implementation](http://www.pykota.com/software/pkipplib/)
-
-
-IPP Overview
-------------
+Chapter 1: Overview of IPP
+==========================
 
 IPP defines an abstract model for printing, including operations with common
 semantics (business logic) for working with the model's objects.  Because the
-same semantics of IPP are followed by all printers, the client (software) does
-not need to know the internal details of the printer (hardware).
+same semantics of IPP are followed by all Printers, the Client (software) does
+not need to know the internal details of the Printer (hardware).
 
 IPP uses HTTP as its transport protocol.  Each IPP request is a HTTP POST with
 a binary IPP message and print file, if any, in the request message body.  The
@@ -51,8 +17,8 @@ using any of the usual HTTP mechanisms.
 > or privacy (encryption).
 
 Printers are identified using Universal Resource Identifiers ("URIs") with the
-"ipp" or "ipps" scheme.  Print jobs are identified using the printer's URI and a
-job number that is unique to that printer.  The following are example printer
+"ipp" or "ipps" scheme.  Print Jobs are identified using the Printer's URI and a
+Job number that is unique to that Printer.  The following are example Printer
 URIs:
 
 ```
@@ -70,11 +36,11 @@ https://printer2.example.com/ipp/print
 https://server.example.com:631/ipp/print/printer3
 ```
 
-> Note: The resource path "/ipp/print" is commonly used by IPP printers, however
-> there is no hard requirement to follow that convention and older IPP printers
-> used a variety of different locations.  Consult your printer documentation or
-> the printer's Bonjour registration information to determine the proper
-> hostname, port number, and path to use for your printer.
+> Note: The resource path "/ipp/print" is commonly used by IPP Printers, however
+> there is no hard requirement to follow that convention and older IPP Printers
+> used a variety of different locations.  Consult your Printer documentation or
+> the Printer's Bonjour (DNS-SD) registration information to determine the
+> proper hostname, port number, and path to use for your Printer.
 
 
 IPP Operations
@@ -88,7 +54,7 @@ The following IPP operations are commonly used:
 
 - Print-Job: Create a new print job with a single document.
 
-- Get-Printer-Attributes: Get printer status and capabilities.
+- Get-Printer-Attributes: Get Printer status and capabilities.
 
 - Get-Jobs: Get a list of queued jobs.
 
@@ -101,16 +67,15 @@ lists all of the registered IPP operations.
 
 > Note: IPP provides two ways to print a single file - using the Print-Job
 > operation or using a combination of the Create-Job and Send-Document
-> operations.  Clients typically use the Create-Job and Send-Document operations
-> so that the job can be more easily canceled while the document data is being
-> transferred to the printer.
+> operations.  The [IPP Implementor's Guide v2.0](#standards) describes which
+> operations to use.
 
 
 IPP Message Encoding
 --------------------
 
-IPP messages use a common format for both requests (from the client to the
-printer) and responses (from the printer to the client).  Each IPP message
+IPP messages use a common format for both requests (from the Client to the
+printer) and responses (from the Printer to the Client).  Each IPP message
 starts with a version number (2.0 is the most common), an operation (request) or
 status (response) code, a request number, and a list of attributes.  Attributes
 are named and have strongly typed values such as:
@@ -138,7 +103,7 @@ The first two attributes in an IPP message are always:
 2. "attributes-natural-language" which defines the default language for those
    strings, e.g., "en" for English, "fr" for French, "ja" for Japanese, etc.
 
-The next attributes must be the printer's URI ("printer-uri") and, if the
+The next attributes must be the Printer's URI ("printer-uri") and, if the
 request is targeting a print job, the job's ID number ("job-id").
 
 Most requests also include the "requesting-user-name" attribute that provides
@@ -207,7 +172,7 @@ And this is how you'd send a Print-Job request using the nodejs API:
 
 ```
 var ipp = require("ipp");
-var printer = ipp.Printer("http://printer.example.com:631/ipp/print");
+var Printer = ipp.Printer("http://printer.example.com:631/ipp/print");
 var fs = require("fs");
 var document;
 
@@ -234,8 +199,8 @@ printer.execute("Print-Job", msg, function(err, res) {
 The response message uses the same version number, request number, character
 set, and natural language values as the request.  A status code replaces the
 operation code in the initial message header - for the Print-Job operation the
-printer will return the 'successful-ok' status code if the print request is
-successful or 'server-error-printer-busy' if the printer is busy and wants you
+Printer will return the 'successful-ok' status code if the print request is
+successful or 'server-error-printer-busy' if the Printer is busy and wants you
 to try again at a later time.
 
 The character set and natural language values in the response are followed by

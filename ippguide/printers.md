@@ -7,43 +7,43 @@ What are Printers?
 
 Printers in IPP are objects that represent real or virtual (for saving,
 emailing, etc.) output devices.  Printer objects provide attributes that
-describe the *status* of the printer (printing something, out of paper, etc.),
-the *capabilities* of the printer (what paper sizes are supported, can the
-printer reproduce color, can the printer staple the output, etc.), and *general
-information* about the printer (where the printer is located, the URL for the
+describe the *status* of the Printer (printing something, out of paper, etc.),
+the *capabilities* of the Printer (what paper sizes are supported, can the
+Printer reproduce color, can the Printer staple the output, etc.), and *general
+information* about the Printer (where the Printer is located, the URL for the
 printer's administrative web page, etc.)  Printers also manage a queue of print
 jobs.
 
 
 ### Printer Status Attributes
 
-Printers provide two main status attributes: "printer-state" and
+Printers have two main status attributes: "printer-state" and
 "printer-state-reasons".  The "printer-state" attribute is a number that
-describes the general state of the printer:
+describes the general state of the Printer:
 
-- '3': The printer is idle.
-- '4': The printer is processing a print job.
-- '5': The printer is stopped and requires attention.
+- '3': The Printer is idle.
+- '4': The Printer is processing a print job.
+- '5': The Printer is stopped and requires attention.
 
 The "printer-state-reasons" attribute is a list of strings that provide details
-about the printer's state:
+about the Printer's state:
 
 - 'none': Everything is super, nothing to report.
-- 'media-needed': The printer needs paper loaded.
-- 'toner-low': The printer is low on toner.
-- 'toner-empty': The printer is out of toner.
-- 'marker-supply-low': The printer is low on ink.
-- 'marker-supply-empty': The printer is out of ink.
+- 'media-needed': The Printer needs paper loaded.
+- 'toner-low': The Printer is low on toner.
+- 'toner-empty': The Printer is out of toner.
+- 'marker-supply-low': The Printer is low on ink.
+- 'marker-supply-empty': The Printer is out of ink.
 
 The string may also have a severity suffix ("-error", "-warning", or "-report")
-to tell the clients whether the reason affects the printing of a job.
+to tell the Clients whether the reason affects the printing of a job.
 
 > Note: The [IANA IPP registry](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4)
 > lists all of the registered strings for the "printer-state-reasons" attribute.
 > All strings are in English but can be localized using message catalogs
-> provided by each printer.
+> provided by each Printer.
 
-Many printers also provide status attributes for alerts ("printer-alert"),
+Many Printers also provide status attributes for alerts ("printer-alert"),
 consumables ("printer-supply", "printer-supply-description", and
 "printer-supply-info-uri"), input trays ("printer-input-tray"), output trays
 ("printer-output-tray"), and so forth.
@@ -51,7 +51,7 @@ consumables ("printer-supply", "printer-supply-description", and
 
 ### Printer Capability Attributes
 
-Printers provide many capability attributes, including:
+Printers have many capability attributes, including:
 
 - "ipp-features-supported": A list of IPP features that are supported, for
   example 'ipp-everywhere' and 'icc-color-matching'.
@@ -106,37 +106,42 @@ Printers provide many capability attributes, including:
   processes (staple, punch, fold, etc.) that are supported.
 
 - "finishings-ready" and "finishings-col-ready": A list of finishing processes
-  that can be requested without stopping the printer.
+  that can be requested without stopping the Printer.
+
+- "job-password-supported", "job-password-encryption-supported",
+  "job-password-repertoire-configured", and "job-password-repertoire-supported":
+  The supported Job password/PIN values that can be specified when creating a
+  Job.
 
 
 ### Printer Information Attributes
 
-Printers provide seven main description attributes: "printer-uri-supported",
+Printers have seven main informational attributes: "printer-uri-supported",
 "uri-authentication-supported", "uri-security-supported", "printer-info",
 "printer-more-info", "printer-location", and "printer-geo-location".
 
-The "printer-uri-supported" attribute lists the supported printer URI values.
+The "printer-uri-supported" attribute lists the supported Printer URI values.
 The "uri-authentication-supported" attribute lists the authorization and access
-control requirements for each of the supported printer URI values.  Similarly,
+control requirements for each of the supported Printer URI values.  Similarly,
 the "uri-security-supported" attribute lists the encryption requirements for
-each of the supported printer URI values.
+each of the supported Printer URI values.
 
-The "printer-info" attribute provides a textual description of the printer and
-often defaults to the make and model of the printer.  The "printer-more-info"
-attribute provides a URL to the printer's administrative web page.
+The "printer-info" attribute provides a textual description of the Printer and
+often defaults to the make and model of the Printer.  The "printer-more-info"
+attribute provides a URL to the Printer's administrative web page.
 
-The "printer-location" attribute provides a textual location of the printer,
+The "printer-location" attribute provides a textual location of the Printer,
 for example 'Second floor near the break room.'.  The "printer-geo-location"
-attribute provides the geographic location of the printer, if known, as a
+attribute provides the geographic location of the Printer, if known, as a
 [geo:](https://tools.ietf.org/html/rfc5870) URI.
 
 
 Querying the Printer Attributes
 -------------------------------
 
-The Get-Printer-Attributes operation is used to query any of the printer
-attributes mentioned previously.  The following `ipptool` test will report the
-current printer attribute values when printing PWG Raster files:
+The Get-Printer-Attributes operation is used to query any of the Printer
+attributes mentioned previously.  The following example `ipptool` test file will
+report the current Printer attribute values when printing PWG Raster files:
 
 ```
 {
@@ -154,7 +159,7 @@ current printer attribute values when printing PWG Raster files:
 ```
 
 > Note: The "requested-attributes" attribute lists attributes (or groups of
-> attributes) that the client is interested in.  The 'printer-description'
+> attributes) that the Client is interested in.  The 'printer-description'
 > group asks for all status and information attributes while the 'job-template'
 > group asks for all capability attributes.  For compatibility reasons, the
 > "media-col-database" attribute needs to be requested explicitly.
@@ -201,11 +206,11 @@ for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response)
 }
 ```
 
-And this is how you'd query a printer using the nodejs API:
+And this is how you'd query a Printer using the nodejs API:
 
 ```
 var ipp = require("ipp");
-var printer = ipp.Printer("http://printer.example.com:631/ipp/print");
+var Printer = ipp.Printer("http://printer.example.com:631/ipp/print");
 
 var msg = {
   "operation-attributes-tag": {
