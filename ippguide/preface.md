@@ -1,13 +1,5 @@
----
-title: How to Use the Internet Printing Protocol
-author: Michael R Sweet, Peter Zehler
-copyright: Copyright © 2017-2018 by The Printer Working Group
-version: v2018.1109
-...
-
 Preface
 =======
-
 
 What is IPP?
 ------------
