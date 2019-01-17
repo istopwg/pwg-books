@@ -25,8 +25,8 @@ describes the general state of the Printer:
 - '4': The Printer is processing a print job.
 - '5': The Printer is stopped and requires attention.
 
-The "printer-state-reasons" attribute is a list of strings that provide details
-about the Printer's state:
+The "printer-state-reasons" attribute is a list of keyword strings that provide
+details about the Printer's state:
 
 - 'none': Everything is super, nothing to report.
 - 'media-needed': The Printer needs paper loaded.
@@ -39,9 +39,9 @@ The string may also have a severity suffix ("-error", "-warning", or "-report")
 to tell the Clients whether the reason affects the printing of a job.
 
 > Note: The [IANA IPP registry](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4)
-> lists all of the registered strings for the "printer-state-reasons" attribute.
-> All strings are in English but can be localized using message catalogs
-> provided by each Printer.
+> lists all of the registered keyword strings for the "printer-state-reasons"
+> attribute.  All strings are in English but can be localized using message
+> catalogs provided by each Printer.
 
 Many Printers also provide status attributes for alerts ("printer-alert"),
 consumables ("printer-supply", "printer-supply-description", and

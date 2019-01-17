@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>How to Use the Internet Printing Protocol</title>
-    <meta name="version" content="v2019.0111">
+    <meta name="version" content="v2019.0117">
     <meta name="author" content="Michael R Sweet, Peter Zehler">
     <meta name="copyright" content="Copyright © 2017-2019 by The Printer Working Group. All Rights Reserved.">
     <style><!--
@@ -117,7 +117,7 @@ tr:nth-child(odd) td {
   </head>
   <body>
     <h1 class="title">How to Use the Internet Printing Protocol</h1>
-    <p class="title">Version v2019.0111</p>
+    <p class="title">Version v2019.0117</p>
     <p class="title">by Michael R Sweet, Peter Zehler</p>
     <p class="title">Copyright © 2017-2019 by The Printer Working Group. All Rights Reserved.</p>
 	<p>The material contained herein is not a license, either expressed or implied, to any IPR owned or controlled by any of the authors or developers of this material or the Printer Working Group. The material contained herein is provided on an “AS IS” basis and to the maximum extent permitted by applicable law, this material is provided AS IS AND WITH ALL FAULTS, and the authors and developers of this material and the Printer Working Group and its members hereby disclaim all warranties and conditions, either expressed, implied or statutory, including, but not limited to, any (if any) implied warranties that the use of the information herein will not infringe any rights or any implied warranties of merchantability or fitness for a particular purpose.</p>
@@ -322,7 +322,7 @@ tr:nth-child(odd) td {
 	<li>'4': The Printer is processing a print job.</li>
 	<li>'5': The Printer is stopped and requires attention.</li>
 </ul>
-	<p>The &quot;printer-state-reasons&quot; attribute is a list of strings that provide details about the Printer's state:</p>
+	<p>The &quot;printer-state-reasons&quot; attribute is a list of keyword strings that provide details about the Printer's state:</p>
 	<ul>
 	<li>'none': Everything is super, nothing to report.</li>
 	<li>'media-needed': The Printer needs paper loaded.</li>
@@ -333,7 +333,7 @@ tr:nth-child(odd) td {
 </ul>
 	<p>The string may also have a severity suffix (&quot;-error&quot;, &quot;-warning&quot;, or &quot;-report&quot;) to tell the Clients whether the reason affects the printing of a job.</p>
 	<blockquote>
-	<p>Note: The <a href="https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4">IANA IPP registry</a> lists all of the registered strings for the &quot;printer-state-reasons&quot; attribute. All strings are in English but can be localized using message catalogs provided by each Printer.</p>
+	<p>Note: The <a href="https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4">IANA IPP registry</a> lists all of the registered keyword strings for the &quot;printer-state-reasons&quot; attribute. All strings are in English but can be localized using message catalogs provided by each Printer.</p>
 </blockquote>
 	<p>Many Printers also provide status attributes for alerts (&quot;printer-alert&quot;), consumables (&quot;printer-supply&quot;, &quot;printer-supply-description&quot;, and &quot;printer-supply-info-uri&quot;), input trays (&quot;printer-input-tray&quot;), output trays (&quot;printer-output-tray&quot;), and so forth.</p>
 	<h3 id="printer-capability-attributes">Printer Capability Attributes</h3>
@@ -451,7 +451,7 @@ tr:nth-child(odd) td {
 	<li>'8': The Job was aborted by the Printer.</li>
 	<li>'9': The Job completed successfully.</li>
 </ul>
-	<p>The &quot;job-state-reasons&quot; attribute is a list of strings that provide details about the Job's state:</p>
+	<p>The &quot;job-state-reasons&quot; attribute is a list of keyword strings that provide details about the Job's state:</p>
 	<ul>
 	<li>'none': Everything is super, nothing to report.</li>
 	<li>'document-format-error': The Document could not be printed due to a file format error.</li>
@@ -460,7 +460,7 @@ tr:nth-child(odd) td {
 	<li>'job-password-wait': The Printer is waiting for the user to enter the PIN for the Job.</li>
 </ul>
 	<blockquote>
-	<p>Note: The <a href="https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4">IANA IPP registry</a> lists all of the registered strings for the &quot;job-state-reasons&quot; attribute.</p>
+	<p>Note: The <a href="https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4">IANA IPP registry</a> lists all of the registered keyword strings for the &quot;job-state-reasons&quot; attribute. All strings are in English but can be localized using message catalogs provided by each Printer.</p>
 </blockquote>
 	<p>Page counts are recorded in the following attributes:</p>
 	<ul>

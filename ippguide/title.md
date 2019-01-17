@@ -2,7 +2,7 @@
 title: How to Use the Internet Printing Protocol
 author: Michael R Sweet, Peter Zehler
 copyright: Copyright © 2017-2019 by The Printer Working Group. All Rights Reserved.
-version: v2019.0111
+version: v2019.0117
 ...
 
 The material contained herein is not a license, either expressed or implied, to

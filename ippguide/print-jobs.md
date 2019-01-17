@@ -28,8 +28,8 @@ general state of the Job:
 - '8': The Job was aborted by the Printer.
 - '9': The Job completed successfully.
 
-The "job-state-reasons" attribute is a list of strings that provide details
-about the Job's state:
+The "job-state-reasons" attribute is a list of keyword strings that provide
+details about the Job's state:
 
 - 'none': Everything is super, nothing to report.
 - 'document-format-error': The Document could not be printed due to a file
@@ -41,7 +41,9 @@ about the Job's state:
   for the Job.
 
 > Note: The [IANA IPP registry](https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xml#ipp-registrations-4)
-> lists all of the registered strings for the "job-state-reasons" attribute.
+> lists all of the registered keyword strings for the "job-state-reasons"
+> attribute.  All strings are in English but can be localized using message
+> catalogs provided by each Printer.
 
 Page counts are recorded in the following attributes:
 
