@@ -198,14 +198,19 @@ const char *filetype;
 http_t *http;
 ipp_t *request;
 
-http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC,
+                    HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
 
 request = ippNewRequest(IPP_OP_PRINT_JOB);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, "requesting-user-name", NULL, "John Doe");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, "document-format", NULL, filetype);
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI,
+             "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME,
+             "requesting-user-name", NULL, "John Doe");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE,
+             "document-format", NULL, filetype);
 
-ippAddString(request, IPP_TAG_JOB, IPP_TAG_KEYWORD, "media", NULL, "na_letter_8.5x11in");
+ippAddString(request, IPP_TAG_JOB, IPP_TAG_KEYWORD,
+             "media", NULL, "na_letter_8.5x11in");
 
 ippDelete(cupsDoFileRequest(http, request, "/ipp/print", filename));
 ```
@@ -301,25 +306,34 @@ const char *filetype;
 http_t *http;
 ipp_t *request, *response;
 
-http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC,
+                    HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
 
 request = ippNewRequest(IPP_OP_CREATE_JOB);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, "requesting-user-name", NULL, "John Doe");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI,
+             "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME,
+             "requesting-user-name", NULL, "John Doe");
 
-ippAddString(request, IPP_TAG_JOB, IPP_TAG_KEYWORD, "media", NULL, "na_letter_8.5x11in");
+ippAddString(request, IPP_TAG_JOB, IPP_TAG_KEYWORD,
+             "media", NULL, "na_letter_8.5x11in");
 
 response = cupsDoFileRequest(http, request, "/ipp/print", filename);
 
-int Job_id = ippGetInteger(ippFindAttribute(response, "job-id", IPP_TAG_INTEGER), 0);
+int Job_id = ippGetInteger(ippFindAttribute(response, "job-id",
+                                            IPP_TAG_INTEGER), 0);
 
 ippDelete(response);
 
 request = ippNewRequest(IPP_OP_SEND_DOCUMENT);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_INTEGER, "job-id", Job_id);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, "requesting-user-name", NULL, "John Doe");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, "document-format", NULL, filetype);
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI,
+             "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_INTEGER,
+             "job-id", Job_id);
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME,
+             "requesting-user-name", NULL, "John Doe");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE,
+             "document-format", NULL, filetype);
 
 ippDelete(cupsDoFileRequest(http, request, "/ipp/print", filename));
 

@@ -143,12 +143,16 @@ The same request using the CUPS API would look like the following:
 http_t *http;
 ipp_t *request, *response;
 
-http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC,
+                    HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
 
 request = ippNewRequest(IPP_OP_PRINT_JOB);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, "requesting-user-name", NULL, "John Doe");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, "document-format", NULL, "text/plain");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI,
+             "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME,
+             "requesting-user-name", NULL, "John Doe");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE,
+             "document-format", NULL, "text/plain");
 
 response = cupsDoFileRequest(http, request, "/ipp/print", "testfile.txt");
 
@@ -156,7 +160,9 @@ ipp_attribute_t *attr;
 const char *name;
 char value[2048];
 
-for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response))
+for (attr = ippFirstAttribute(response);
+     attr;
+     attr = ippNextAttribute(response))
 {
   name = ippGetName(attr);
 

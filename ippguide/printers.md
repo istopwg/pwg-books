@@ -154,7 +154,8 @@ report the current Printer attribute values when printing PWG Raster files:
     ATTR uri "printer-uri" "ipp://printer.example.com/ipp/print"
     ATTR name "requesting-user-name" "John Doe"
     ATTR mimeMediaType "document-format" "image/pwg-raster"
-    ATTR keyword "requested-attributes" "printer-description","job-template","media-col-database"
+    ATTR keyword "requested-attributes"
+         "printer-description","job-template","media-col-database"
 }
 ```
 
@@ -180,13 +181,21 @@ static const char * const requested_attributes[] =
   "media-col-database"
 };
 
-http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC, HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
+http = httpConnect2("printer.example.com", 631, NULL, AF_UNSPEC,
+                    HTTP_ENCRYPTION_IF_REQUESTED, 1, 30000, NULL);
 
 request = ippNewRequest(IPP_OP_GET_PRINTER_ATTRIBUTES);
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, "requesting-user-name", NULL, "John Doe");
-ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE, "document-format", NULL, "image/pwg-raster");
-ippAddStrings(request, IPP_TAG_OPERATION, IPP_TAG_KEYWORD, "requested-attributes", (int)(sizeof(requested_attributes) / sizeof(requested_attributes[0])), NULL, requested_attributes);
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI,
+             "printer-uri", NULL, "ipp://printer.example.com/ipp/print");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME,
+             "requesting-user-name", NULL, "John Doe");
+ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE,
+             "document-format", NULL, "image/pwg-raster");
+ippAddStrings(request, IPP_TAG_OPERATION, IPP_TAG_KEYWORD,
+              "requested-attributes",
+              (int)(sizeof(requested_attributes) /
+                    sizeof(requested_attributes[0])),
+              NULL, requested_attributes);
 
 response = cupsDoRequest(http, request, "/ipp/print");
 
@@ -194,7 +203,9 @@ ipp_attribute_t *attr;
 const char *name;
 char value[2048];
 
-for (attr = ippFirstAttribute(response); attr; attr = ippNextAttribute(response))
+for (attr = ippFirstAttribute(response);
+     attr;
+     attr = ippNextAttribute(response))
 {
   name = ippGetName(attr);
 
@@ -216,7 +227,8 @@ var msg = {
   "operation-attributes-tag": {
     "requesting-user-name": "John Doe",
     "document-format": "image/pwg-raster",
-    "requested-attributes": ["printer-description", "job-template", "media-col-database"]
+    "requested-attributes": ["printer-description", "job-template",
+                             "media-col-database"]
   }
 };
 
