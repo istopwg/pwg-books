@@ -334,6 +334,7 @@ ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME,
              "requesting-user-name", NULL, "John Doe");
 ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_MIMETYPE,
              "document-format", NULL, filetype);
+ippAddBoolean(request, IPP_TAG_OPERATION, "last-document", 1);
 
 ippDelete(cupsDoFileRequest(http, request, "/ipp/print", filename));
 
@@ -375,7 +376,8 @@ var send_msg = {
   "operation-attributes-tag": {
     "job-id": Job_id,
     "requesting-user-name": "John Doe",
-    "document-format": filetype
+    "document-format": filetype,
+    "last-document": true
   },
   data: filedata
 };
